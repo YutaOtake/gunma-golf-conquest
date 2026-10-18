@@ -1,6 +1,7 @@
 // 群馬ゴルフ 全制覇トラッカー（ビルド不要の vanilla JS）
 // データ源：courses.json（読むだけ・書き換えない）／記録：IndexedDB（この端末の中だけ）
 import * as db from './db.js';
+import { analyze, YARDS_PER_STROKE } from './rating.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -27,6 +28,7 @@ const state = {
   data: null,
   courses: [],
   byId: new Map(),
+  analysis: new Map(),
   yomi: {},
   hay: new Map(),
   rounds: [],
@@ -128,6 +130,12 @@ function diffLabel(d) {
   return s ? s.split('：')[0] : String(d);
 }
 const areaName = (i) => state.data?.areas?.[i] ?? `エリア${i}`;
+// 本来のレート（最難の組み合わせ×いちばん後ろのティ）。ティの分かる公式値だけ
+const honraiOf = (c) => {
+  const h = state.analysis.get(c.id)?.honrai;
+  return h && h.basis === 'tee' ? h : null;
+};
+const honraiCR = (c) => honraiOf(c)?.cr ?? null;
 const yomiOf = (c) => state.yomi[c.name] || c.name;
 
 // ---------- 達磨 ----------
@@ -222,11 +230,11 @@ function nullLast(a, b, dir) {
 const SORT_FN = {
   area: (a, b) => a.area - b.area || a.id - b.id,
   hard: (a, b) => b.difficulty - a.difficulty
-    || nullLast(a.course_rating_back, b.course_rating_back, -1)
+    || nullLast(honraiCR(a), honraiCR(b), -1)
     || nullLast(a.gdo_upper_avg, b.gdo_upper_avg, -1) || a.id - b.id,
   easy: (a, b) => a.difficulty - b.difficulty
-    || nullLast(a.gdo_upper_avg, b.gdo_upper_avg, 1)
-    || nullLast(a.course_rating_back, b.course_rating_back, 1) || a.id - b.id,
+    || nullLast(honraiCR(a), honraiCR(b), 1)
+    || nullLast(a.gdo_upper_avg, b.gdo_upper_avg, 1) || a.id - b.id,
   elev: (a, b) => nullLast(a.elevation_m, b.elevation_m, -1) || a.id - b.id,
   name: (a, b) => collator.compare(yomiOf(a), yomiOf(b)) || a.id - b.id,
 };
@@ -403,7 +411,7 @@ function cardHTML(c) {
     </span>
     <span class="cc-badges">
       <span class="badge-cool cool-${c.cool}">${esc(coolSymbol(c.cool))} ${fmtNum(c.elevation_m)}m</span>
-      <span class="badge-diff diff-${c.difficulty}">${esc(diffLabel(c.difficulty))}</span>
+      <span class="badge-diff diff-${c.difficulty}">${esc(diffLabel(c.difficulty))}${honraiCR(c) != null ? ` ${honraiCR(c).toFixed(1)}` : ''}</span>
     </span>
   </button></li>`;
 }
@@ -460,7 +468,11 @@ function renderDetail() {
   const s = summary(c.id);
   const rounds = state.roundsByCourse.get(c.id) || [];
   const maps = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.name)}`;
-  const cr = c.course_rating_back == null ? '<small>未取得</small>' : Number(c.course_rating_back).toFixed(1);
+  const an = state.analysis.get(c.id);
+  const h = honraiOf(c);
+  const honraiText = h
+    ? `${h.cr.toFixed(1)}<br><small>${esc(h.round)}・${esc(h.tee)}ティ</small>${an?.regular ? `<br><small>レギュラー ${an.regular.cr.toFixed(1)}${an.regular.round !== h.round ? `（${esc(an.regular.round)}）` : ''}</small>` : ''}`
+    : `<small>公式値なし</small>${c.course_rating_back != null ? `<br><small>元データのバックCR ${Number(c.course_rating_back).toFixed(1)}</small>` : ''}`;
   const gdo = c.gdo_upper_avg == null ? '<small>未取得</small>' : Number(c.gdo_upper_avg).toFixed(1);
   const status = s
     ? `<p class="status-pill is-played"><span>✓ プレー済</span><span>初回 ${esc(fmtDate(s.first))}</span><span>ベスト ${s.best ?? '—'}</span><span>${s.count}回</span></p>`
@@ -484,10 +496,11 @@ function renderDetail() {
         <div><dt>ホール数</dt><dd>${c.holes}ホール</dd></div>
         <div><dt>タイプ</dt><dd>${esc(c.type)}</dd></div>
         <div><dt>アクセス</dt><dd>${esc(c.access)}</dd></div>
-        <div><dt>難易度</dt><dd><span class="badge-diff diff-${c.difficulty}">${esc(diffLabel(c.difficulty))}</span> <small>${c.difficulty} / 4</small></dd></div>
-        <div><dt>バックCR</dt><dd>${cr}</dd></div>
+        <div><dt>難易度</dt><dd><span class="badge-diff diff-${c.difficulty}">${esc(diffLabel(c.difficulty))}</span> <small>${c.difficulty} / 4</small>${an?.level == null ? '<br><small>旧基準（公式レート未取得）</small>' : ''}</dd></div>
+        <div><dt>本来のレート</dt><dd>${honraiText}</dd></div>
         <div><dt>GDO上級者平均</dt><dd>${gdo}</dd></div>
       </dl>
+      ${layoutHTML(c, an)}
       <section class="detail-section"><h3>特徴</h3><p>${esc(c.feature)}</p></section>
       ${c.memo ? `<section class="detail-section"><h3>メモ</h3><p>${esc(c.memo)}</p></section>` : ''}
       <div class="link-row">
@@ -504,6 +517,72 @@ function renderDetail() {
       <button type="button" class="btn btn-primary" data-action="add-round-here">＋ このコースのラウンドを記録</button>
     </div>`;
   if (keepScroll) $('.detail-scroll', root).scrollTop = keepScroll;
+}
+
+// コース別の難易度（18Hの組み合わせ表・9H表・出典・食い違い）
+function layoutHTML(c, an) {
+  const lay = c.layout;
+  if (!lay || !an) return '';
+  const hardest = honraiOf(c)?.round ?? null;
+  const multi = an.rounds.length > 1;
+  const via = (r) => (r.source && r.source.rank > 0 ? `<br><small>${esc(r.source.name)}</small>` : '');
+  const cell = (r) => (r ? `${r.cr.toFixed(1)}${r.slope ? `<small> / ${r.slope}</small>` : ''}${via(r)}` : '—');
+  const backCell = (r) => {
+    if (r.back) return `${cell(r.back)}${r.back.tee !== 'バック' ? `<small>（${esc(r.back.tee)}）</small>` : ''}`;
+    if (r.unknown) return `${r.unknown.cr.toFixed(1)}<small>（ティ不明）</small>${via(r.unknown)}`;
+    return '—';
+  };
+  const mark = '<span class="hardest-mark">最難</span>';
+  const roundRows = an.rounds.map((r) => {
+    const top = multi && r.name === hardest;
+    return `<tr${top ? ' class="is-hardest"' : ''}>
+      <th scope="row">${esc(r.name)}${top ? ` ${mark}` : ''}</th>
+      <td>${backCell(r)}</td><td>${cell(r.reg)}</td><td>${r.yardsBack != null ? fmtNum(r.yardsBack) : '—'}</td>
+    </tr>`;
+  }).join('');
+  // 「最難」の印は、公式・掲載値・計算値のときだけ（距離だけの推定では付けない）
+  const NINE_BASIS = { official: '（公式）', published: '（掲載値）', calc: '（計算）', estimate: '（推定）' };
+  const markable = an.nines.filter((n) => n.cr != null && n.basis !== 'estimate').map((n) => n.cr);
+  const nineMax = markable.length > 1 ? Math.max(...markable) : null;
+  const nineRows = an.nines.map((n) => {
+    const top = n.basis !== 'estimate' && n.cr != null && n.cr === nineMax;
+    return `<tr${top ? ' class="is-hardest"' : ''}>
+      <th scope="row">${esc(n.name)}${top ? ` ${mark}` : ''}</th>
+      <td>${n.par ?? '—'}</td>
+      <td>${n.yards_back != null ? fmtNum(n.yards_back) : '—'}<small> / ${n.yards_reg != null ? fmtNum(n.yards_reg) : '—'}</small></td>
+      <td>${n.cr != null ? `${n.cr.toFixed(1)}${n.slope ? `<small> / ${n.slope}</small>` : ''}<small>${NINE_BASIS[n.basis] || ''}</small>` : '—'}</td>
+    </tr>`;
+  }).join('');
+  const hasEstimate = an.nines.some((n) => n.basis === 'estimate');
+  const hasCalc = an.nines.some((n) => n.basis === 'calc');
+  const srcs = new Set();
+  for (const n of lay.nines || []) {
+    for (const u of n.src || []) srcs.add(u);
+    for (const t of n.ratings || []) if (t.src) srcs.add(t.src);
+  }
+  for (const r of lay.rounds || []) for (const t of r.ratings || []) if (t.src) srcs.add(t.src);
+  const links = [...srcs].map((u) => (/^https?:\/\//.test(u)
+    ? `<li><a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(u.replace(/^https?:\/\//, ''))}</a></li>`
+    : `<li>${esc(u)}</li>`)).join('');
+  const conflicts = (lay.conflicts || []).map((x) => `<li>${esc(x)}</li>`).join('');
+  return `<section class="detail-section layout-sec"><h3>コース別の難易度</h3>
+    <div class="rt-wrap"><table class="rt">
+      <caption>18ホールの組み合わせ（コースレート）</caption>
+      <thead><tr><th scope="col">組み合わせ</th><th scope="col">バック</th><th scope="col">レギュラー</th><th scope="col">ヤード</th></tr></thead>
+      <tbody>${roundRows}</tbody>
+    </table></div>
+    ${an.nines.length ? `<div class="rt-wrap"><table class="rt">
+      <caption>9ホールごと</caption>
+      <thead><tr><th scope="col">コース</th><th scope="col">パー</th><th scope="col">ヤード<small>（バック / レギュラー）</small></th><th scope="col">レート</th></tr></thead>
+      <tbody>${nineRows}</tbody>
+    </table></div>` : ''}
+    ${an.nines.some((n) => n.basis === 'official') ? '<p class="fine">（公式）＝ゴルフ場が公表している9Hごとのコースレート（/ の後はスロープ）。</p>' : ''}
+    ${hasCalc ? '<p class="fine">（計算）＝3通りの組み合わせのレートから逆算した値（18Hのレート＝前後9Hの和として）。</p>' : ''}
+    ${hasEstimate ? `<p class="fine">（推定）＝18Hのレートを9Hのヤード差で前後に振り分けた値（${YARDS_PER_STROKE}ヤード≒1打）。距離の差だけを反映し、池・OB・高低差の差は入っていません。</p>` : ''}
+    ${lay.note ? `<details class="src"><summary>調査メモ</summary><p class="fine">${esc(lay.note)}</p></details>` : ''}
+    ${conflicts ? `<details class="src"><summary>出典によって値が違う項目（${(lay.conflicts || []).length}）</summary><ul>${conflicts}</ul></details>` : ''}
+    ${links ? `<details class="src"><summary>出典（${srcs.size}）</summary><ul class="src-links">${links}</ul></details>` : ''}
+  </section>`;
 }
 
 function renderGuide() {
@@ -532,7 +611,17 @@ function renderGuide() {
       <p>1回でもラウンドを記録したコースが「プレー済」になり、全コースがプレー済になると全制覇です。一覧には初回プレー日とベストスコアが出ます。</p>
     </section>
     <section class="card"><h3>涼しさ（標高）</h3><ul class="legend-list">${coolItems}</ul></section>
-    <section class="card"><h3>難易度（4段階）</h3><ul class="legend-list">${diffItems}</ul></section>
+    <section class="card"><h3>難易度（4段階）</h3><ul class="legend-list">${diffItems}</ul>
+      ${lg.difficulty?.note ? `<p class="fine">${esc(lg.difficulty.note)}</p>` : ''}</section>
+    <section class="card"><h3>コース別の難易度の出し方</h3>
+      <dl class="kv">
+        <dt>本来のレート</dt><dd>そのゴルフ場の18Hの組み合わせ（27Hなら3通り、36Hなら各コース）のうち最も難しいものを、いちばん後ろのティ（チャンピオン／フルバック／バック）で回ったときのコースレート。レギュラーティの値があれば並べて表示します。</dd>
+        <dt>9H（公式）</dt><dd>ゴルフ場が9Hごとのレートを公表しているときはその値（白水GC・赤城CCなど）。この2つの公式表で、18Hのレートが前後9Hのレートの和になっていることを確かめています。</dd>
+        <dt>9H（計算）</dt><dd>27Hで3通りのレートがそろっているとき、「18Hのレート＝前後9Hの和」として逆算した値。共通の9Hを持つ2つの組み合わせの差が、残りの9H同士の差になります。</dd>
+        <dt>9H（推定）</dt><dd>9H別の公式値が無いとき、18Hのレートを9Hのヤード差で振り分けた値（${YARDS_PER_STROKE}ヤード≒1打）。距離の差だけで、池・OB・高低差の差は入りません。公式の9H値がある2コース（白水GC・赤城CC）で試すと、ずれは0.0〜0.1打でした。</dd>
+        <dt>出典</dt><dd>同じティに出典の違う値があるときは、ゴルフ場の公式 ＞ 楽天GORA ＞ じゃらん ＞ ShotNavi ＞ PLUS の順で採ります。検索結果の要約にしか出てこない値は使いません。公式以外の値には、値の下にサイト名を出しています。食い違いは詳細画面の「出典によって値が違う項目」に。</dd>
+      </dl>
+    </section>
     <section class="card"><h3>数字の出どころと注意</h3>
       <dl class="kv">
         <dt>バックCR</dt><dd>${esc(lg.course_rating_back)}</dd>
@@ -1237,6 +1326,7 @@ async function init() {
     state.data = data;
     state.courses = Array.isArray(data.courses) ? data.courses : [];
     state.byId = new Map(state.courses.map((c) => [c.id, c]));
+    state.analysis = new Map(state.courses.map((c) => [c.id, analyze(c)]));
     state.yomi = yomi && typeof yomi === 'object' ? yomi : {};
   } catch (ex) {
     $('#main').innerHTML = `<div class="page"><div class="card"><h2>コースデータを読み込めませんでした</h2><p>${esc(ex.message || ex)}</p><p>通信できる場所で一度開くと、以後はオフラインでも使えます。</p></div></div>`;

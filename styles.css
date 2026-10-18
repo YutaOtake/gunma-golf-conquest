@@ -308,6 +308,24 @@ main:focus { outline: none; }
 .detail-empty { display: grid; place-items: center; align-content: center; gap: 12px; min-height: 60vh; padding: 24px; text-align: center; color: var(--muted); }
 .detail-empty .daruma { width: 120px; height: 120px; }
 
+/* ===== コース別の難易度 ===== */
+.rt-wrap { overflow-x: auto; margin: 0 0 12px; }
+.rt { width: 100%; border-collapse: collapse; font-size: .875rem; font-variant-numeric: tabular-nums; background: var(--surface); }
+.rt caption { text-align: left; font-weight: 700; padding: 0 0 6px; }
+.rt th, .rt td { padding: 9px 8px; border-bottom: 1px solid var(--border); text-align: right; white-space: nowrap; vertical-align: top; }
+.rt th[scope="row"], .rt thead th:first-child { text-align: left; white-space: normal; }
+.rt thead th { color: var(--muted); font-size: .78rem; }
+.rt small { color: var(--muted); font-weight: 500; }
+.rt tr.is-hardest { background: var(--red-soft); }
+.rt tr.is-hardest small { color: var(--on-red-soft); }
+.hardest-mark { display: inline-block; font-size: .72rem; font-weight: 700; padding: 0 7px; border-radius: 999px; background: var(--diff-4-bg); color: var(--diff-4-fg); }
+.fine { font-size: .82rem; color: var(--muted); margin: 0 0 8px; }
+details.src { margin: 4px 0 0; border-top: 1px solid var(--border); }
+details.src summary { display: flex; align-items: center; min-height: 44px; font-weight: 700; cursor: pointer; }
+details.src ul { margin: 0 0 8px; padding-left: 1.1em; font-size: .85rem; }
+.src-links { list-style: none; padding-left: 0 !important; }
+.src-links a { display: flex; align-items: center; min-height: 44px; word-break: break-all; }
+
 /* ===== 進捗 ===== */
 .hero { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 16px; align-items: center; }
 .hero-art .daruma { width: 128px; height: 128px; display: block; }

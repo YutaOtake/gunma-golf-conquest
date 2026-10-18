@@ -6,12 +6,13 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { analyze } from '../rating.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(process.argv[2] || path.join(ROOT, 'dev', 'out'));
 const SITE = path.join(OUT, 'site');
 const PREFIX = '/gunma-golf-conquest/';
-const SITE_FILES = ['index.html', 'styles.css', 'app.js', 'db.js', 'sw.js', 'courses.json', 'yomi.json', 'manifest.webmanifest', 'icons'];
+const SITE_FILES = ['index.html', 'styles.css', 'app.js', 'db.js', 'rating.js', 'sw.js', 'courses.json', 'yomi.json', 'manifest.webmanifest', 'icons'];
 
 fs.rmSync(SITE, { recursive: true, force: true });
 fs.mkdirSync(SITE, { recursive: true });
@@ -19,6 +20,12 @@ for (const f of SITE_FILES) fs.cpSync(path.join(ROOT, f), path.join(SITE, f), { 
 const DATA = JSON.parse(fs.readFileSync(path.join(SITE, 'courses.json'), 'utf8'));
 const COURSES = DATA.courses;
 const byId = new Map(COURSES.map((c) => [c.id, c]));
+// 難しい順の期待値：難易度（4段階）→ 本来のレート（ティの分かる公式値）→ GDO上級者平均 → id
+const honraiCR = (c) => { const h = analyze(c)?.honrai; return h && h.basis === 'tee' ? h.cr : null; };
+const desc = (a, b) => (a == null && b == null ? 0 : a == null ? 1 : b == null ? -1 : b - a);
+const EXPECTED_HARDEST = [...COURSES].sort((a, b) => b.difficulty - a.difficulty
+  || desc(honraiCR(a), honraiCR(b)) || desc(a.gdo_upper_avg, b.gdo_upper_avg) || a.id - b.id)[0];
+const LAYOUT_SAMPLE = COURSES.find((c) => c.layout && analyze(c)?.rounds.length > 1) || COURSES.find((c) => c.layout);
 
 // ---------- 配信（GitHub Pages 相当：サブパス・max-age=600・ETag） ----------
 const MIME = {
@@ -120,7 +127,7 @@ async function noHScroll(label) {
 async function tapTargets(label) {
   const bad = await page.evaluate(() => {
     const out = [];
-    const els = document.querySelectorAll('button, a[href], input:not([type=hidden]), select, textarea, .chip span');
+    const els = document.querySelectorAll('button, a[href], input:not([type=hidden]), select, textarea, summary, .chip span');
     for (const el of els) {
       if (el.matches('.chip input')) continue; // 見えている span 側で測る
       if (el.closest('dialog:not([open])')) continue;
@@ -197,7 +204,7 @@ try {
     const c = await caches.open(keys[0]);
     return { keys, n: (await c.keys()).length };
   });
-  check('キャッシュに全ファイルが入っている', cacheKeys.n >= 14, `${cacheKeys.keys.join(',')} / ${cacheKeys.n}件`);
+  check('キャッシュに全ファイルが入っている', cacheKeys.n >= 15, `${cacheKeys.keys.join(',')} / ${cacheKeys.n}件`);
   check('全コース数がヘッダーに出る', (await page.textContent('#appbar-count')).includes(`0 / ${COURSES.length}`));
   await shot('n390-home-empty');
   await noHScroll('390 進捗');
@@ -238,8 +245,8 @@ try {
   await page.click('#filter-reset');
   await page.click('#filter-body label.chip:has(input[name="sort"][value="hard"])');
   await sleep(150);
-  const firstHard = await page.locator('.course-card .cc-name').first().textContent();
-  check('難しい順の先頭は下秋間（CR75.4）', firstHard.includes('下秋間'), firstHard);
+  const firstHardId = Number(await page.locator('.course-card').first().getAttribute('data-id'));
+  check('難しい順の先頭が「難易度→本来のレート」の最上位', firstHardId === EXPECTED_HARDEST.id, `${byId.get(firstHardId).name} / 期待 ${EXPECTED_HARDEST.name}`);
   await page.click('#filter-body label.chip:has(input[name="sort"][value="elev"])');
   await sleep(150);
   const maxElev = Math.max(...COURSES.map((c) => c.elevation_m));
@@ -266,6 +273,27 @@ try {
     check(`詳細に${label}が出る`, detailText.includes(val), val);
   }
   await shot('n390-detail');
+  if (LAYOUT_SAMPLE) {
+    await back();
+    await openCourse(LAYOUT_SAMPLE.id);
+    const an = analyze(LAYOUT_SAMPLE);
+    const rows = await page.locator('#detail .layout-sec table.rt').first().locator('tbody tr').count();
+    check('詳細：18Hの組み合わせが全部並ぶ', rows === LAYOUT_SAMPLE.layout.rounds.length, `${LAYOUT_SAMPLE.name} ${rows} / ${LAYOUT_SAMPLE.layout.rounds.length}`);
+    const nineRows = await page.locator('#detail .layout-sec table.rt').nth(1).locator('tbody tr').count().catch(() => 0);
+    check('詳細：9Hごとの行が全部並ぶ', !LAYOUT_SAMPLE.layout.nines.length || nineRows === LAYOUT_SAMPLE.layout.nines.length, `${nineRows} / ${LAYOUT_SAMPLE.layout.nines.length}`);
+    if (an.honrai && an.honrai.basis === 'tee') {
+      const facts = await page.textContent('#detail .facts');
+      check('詳細：本来のレートと組み合わせ名', facts.includes(an.honrai.cr.toFixed(1)) && facts.includes(an.honrai.round), `${an.honrai.cr} ${an.honrai.round}`);
+    }
+    await page.locator('#detail details.src summary').first().click().catch(() => {});
+    await shot('n390-detail-layout', { fullPage: false });
+    await page.evaluate(() => document.querySelector('#detail .layout-sec')?.scrollIntoView());
+    await shot('n390-detail-layout-table');
+    await noHScroll('390 詳細（コース別の難易度）');
+    await tapTargets('390 詳細（コース別の難易度）');
+    await back();
+    await openCourse(1);
+  }
   await noHScroll('390 詳細');
   await tapTargets('390 詳細');
 

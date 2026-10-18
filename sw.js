@@ -5,7 +5,7 @@
 // ■ courses.json だけを差し替えたとき → VERSION は変えなくてよい。
 //   起動のたびに裏で courses.json を見比べ、変わっていれば「コースデータが更新されました」が出る。
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const CACHE_PREFIX = 'gunma-golf-';
 const CACHE = `${CACHE_PREFIX}${VERSION}`;
 
@@ -15,6 +15,7 @@ const ASSETS = [
   'styles.css',
   'app.js',
   'db.js',
+  'rating.js',
   'courses.json',
   'yomi.json',
   'manifest.webmanifest',
