@@ -234,6 +234,7 @@ main:focus { outline: none; }
 .cc-meta { display: block; font-size: .8125rem; color: var(--muted); margin-top: 2px; }
 .cc-played { display: flex; flex-wrap: wrap; gap: 0 10px; font-size: .8125rem; color: var(--on-primary-soft); font-weight: 700; margin-top: 2px; }
 .cc-played span { white-space: nowrap; }
+.cc-key { display: block; font-size: .8125rem; font-weight: 700; margin-top: 2px; }
 @media (prefers-color-scheme: dark) { .cc-played { color: var(--primary); } }
 .cc-badges { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
 @container courselist (min-width: 560px) {

@@ -18,8 +18,10 @@ const VIEWS = ['home', 'list', 'guide', 'settings'];
 const SORTS = {
   area: 'エリア順',
   hard: '難しい順',
-  elev: '標高順（高い順）',
   easy: 'やさしい順',
+  reg: 'スコアが出やすい順（レギュラー）',
+  gdo: 'GDO上級者平均順',
+  elev: '標高順（高い順）',
   name: '名前順（読み）',
 };
 const STATUS = { all: 'すべて', unplayed: '未プレー', played: 'プレー済' };
@@ -136,6 +138,27 @@ const honraiOf = (c) => {
   return h && h.basis === 'tee' ? h : null;
 };
 const honraiCR = (c) => honraiOf(c)?.cr ?? null;
+// レギュラーティのレート（本来のレートと同じ組み合わせ。無ければレギュラーの最大）
+const regularCR = (c) => state.analysis.get(c.id)?.regular?.cr ?? null;
+
+// 順位を出す並び替え（値が小さいほど上位）。値の無いコースは末尾にまとめる
+const RANK_KEYS = {
+  reg: { value: regularCR, label: 'レギュラー', none: 'レギュラーティのレートが見つからないコース' },
+  gdo: { value: (c) => c.gdo_upper_avg ?? null, label: '上級者平均', none: 'GDO上級者平均の無いコース' },
+};
+// 県内順位（絞り込みに関係なく全コースで数える。同じ値は同じ順位）
+function rankMap(key) {
+  const k = RANK_KEYS[key];
+  const vals = state.courses.map((c) => [c.id, k.value(c)]).filter(([, v]) => v != null).sort((a, b) => a[1] - b[1]);
+  const m = new Map();
+  let prev = null;
+  let rank = 0;
+  vals.forEach(([id, v], i) => {
+    if (v !== prev) { rank = i + 1; prev = v; }
+    m.set(id, rank);
+  });
+  return m;
+}
 const yomiOf = (c) => state.yomi[c.name] || c.name;
 
 // ---------- 達磨 ----------
@@ -235,6 +258,9 @@ const SORT_FN = {
   easy: (a, b) => a.difficulty - b.difficulty
     || nullLast(honraiCR(a), honraiCR(b), 1)
     || nullLast(a.gdo_upper_avg, b.gdo_upper_avg, 1) || a.id - b.id,
+  reg: (a, b) => nullLast(regularCR(a), regularCR(b), 1)
+    || nullLast(honraiCR(a), honraiCR(b), 1) || a.id - b.id,
+  gdo: (a, b) => nullLast(a.gdo_upper_avg, b.gdo_upper_avg, 1) || a.id - b.id,
   elev: (a, b) => nullLast(a.elevation_m, b.elevation_m, -1) || a.id - b.id,
   name: (a, b) => collator.compare(yomiOf(a), yomiOf(b)) || a.id - b.id,
 };
@@ -395,7 +421,7 @@ function renderHome() {
   setBars(root);
 }
 
-function cardHTML(c) {
+function cardHTML(c, keyLine = '') {
   const s = summary(c.id);
   const current = c.id === state.selectedId ? ' aria-current="true"' : '';
   const played = s
@@ -406,6 +432,7 @@ function cardHTML(c) {
     <span class="cc-main">
       <span class="cc-name">${esc(c.name)}</span>
       <span class="cc-meta">${esc(c.city)} ・ ${c.holes}H ・ ${esc(c.type)}</span>
+      ${keyLine}
       ${played}
       <span class="visually-hidden">${s ? 'プレー済' : '未プレー'}</span>
     </span>
@@ -434,10 +461,22 @@ function renderList() {
       const done = all.filter((c) => isPlayed(c.id)).length;
       html += `<section class="area-group" aria-label="${esc(areaName(area))}">
         <h3 class="area-head"><span>${esc(areaName(area))}</span><span class="muted">達成 ${done} / ${all.length}</span></h3>
-        <ul>${items.map(cardHTML).join('')}</ul></section>`;
+        <ul>${items.map((c) => cardHTML(c)).join('')}</ul></section>`;
+    }
+  } else if (RANK_KEYS[state.sort]) {
+    const k = RANK_KEYS[state.sort];
+    const ranks = rankMap(state.sort);
+    const withValue = list.filter((c) => k.value(c) != null);
+    const without = list.filter((c) => k.value(c) == null);
+    const line = (c) => `<span class="cc-key">県内${ranks.get(c.id)}位 ・ ${esc(k.label)} ${k.value(c).toFixed(1)}</span>`;
+    html = withValue.length ? `<ul>${withValue.map((c) => cardHTML(c, line(c))).join('')}</ul>` : '';
+    if (without.length) {
+      html += `<section class="area-group" aria-label="${esc(k.none)}">
+        <h3 class="area-head"><span>${esc(k.none)}</span><span class="muted">${without.length}件</span></h3>
+        <ul>${without.map((c) => cardHTML(c)).join('')}</ul></section>`;
     }
   } else {
-    html = `<ul>${list.map(cardHTML).join('')}</ul>`;
+    html = `<ul>${list.map((c) => cardHTML(c)).join('')}</ul>`;
   }
   root.innerHTML = html;
 
@@ -619,6 +658,8 @@ function renderGuide() {
         <dt>9H（公式）</dt><dd>ゴルフ場が9Hごとのレートを公表しているときはその値（白水GC・赤城CCなど）。この2つの公式表で、18Hのレートが前後9Hのレートの和になっていることを確かめています。</dd>
         <dt>9H（計算）</dt><dd>27Hで3通りのレートがそろっているとき、「18Hのレート＝前後9Hの和」として逆算した値。共通の9Hを持つ2つの組み合わせの差が、残りの9H同士の差になります。</dd>
         <dt>9H（推定）</dt><dd>9H別の公式値が無いとき、18Hのレートを9Hのヤード差で振り分けた値（${YARDS_PER_STROKE}ヤード≒1打）。距離の差だけで、池・OB・高低差の差は入りません。公式の9H値がある2コース（白水GC・赤城CC）で試すと、ずれは0.0〜0.1打でした。</dd>
+        <dt>スコアが出やすい順</dt><dd>レギュラーティのコースレートが低い順（本来のレートと同じ組み合わせの値）。多くの人が実際に回るティでの公式の難しさです。</dd>
+        <dt>GDO上級者平均順</dt><dd>GDOスコアで、ふだん86〜95で回る人の18H平均が低い順。実際に出たスコアの実績です。</dd>
         <dt>出典</dt><dd>同じティに出典の違う値があるときは、ゴルフ場の公式 ＞ 楽天GORA ＞ じゃらん ＞ ShotNavi ＞ PLUS の順で採ります。検索結果の要約にしか出てこない値は使いません。公式以外の値には、値の下にサイト名を出しています。食い違いは詳細画面の「出典によって値が違う項目」に。</dd>
       </dl>
     </section>

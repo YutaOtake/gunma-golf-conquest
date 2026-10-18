@@ -252,6 +252,21 @@ try {
   const maxElev = Math.max(...COURSES.map((c) => c.elevation_m));
   const firstElev = await page.locator('.course-card').first().getAttribute('data-id');
   check('標高順の先頭が最高標高', byId.get(Number(firstElev)).elevation_m === maxElev, byId.get(Number(firstElev)).name);
+  for (const [key, valueOf, label] of [
+    ['reg', (c) => analyze(c)?.regular?.cr ?? null, 'レギュラー'],
+    ['gdo', (c) => c.gdo_upper_avg ?? null, '上級者平均'],
+  ]) {
+    await page.click(`#filter-body label.chip:has(input[name="sort"][value="${key}"])`);
+    await sleep(150);
+    const withV = COURSES.filter((c) => valueOf(c) != null);
+    const min = Math.min(...withV.map(valueOf));
+    const firstId = Number(await page.locator('.course-card').first().getAttribute('data-id'));
+    const firstKey = await page.locator('.course-card .cc-key').first().textContent();
+    check(`${label}順：先頭が最小値で「県内1位」`, valueOf(byId.get(firstId)) === min && firstKey.includes('県内1位') && firstKey.includes(min.toFixed(1)), `${byId.get(firstId).name} ${firstKey}`);
+    const keyed = await page.locator('.course-card .cc-key').count();
+    check(`${label}順：値のあるコースに順位、無いコースは末尾にまとめる`, keyed === withV.length && (await page.locator('.area-group .area-head').count()) === (withV.length < COURSES.length ? 1 : 0), `${keyed} / ${withV.length}`);
+    await shot(`n390-list-sort-${key}`);
+  }
   await page.click('#filter-body label.chip:has(input[name="sort"][value="name"])');
   await sleep(150);
   const firstName = await page.locator('.course-card .cc-name').first().textContent();
