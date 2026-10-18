@@ -1,0 +1,13 @@
+{
+  "name": "gunma-golf-conquest-dev",
+  "private": true,
+  "description": "開発用（アイコン書き出し・検証）。アプリ本体はビルド不要で、これは公開物に含まれない作業道具。",
+  "type": "module",
+  "scripts": {
+    "icons": "node render-icons.mjs",
+    "verify": "node verify.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.64.1"
+  }
+}

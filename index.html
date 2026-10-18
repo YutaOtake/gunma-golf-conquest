@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; script-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'">
+<title>群馬ゴルフ 全制覇トラッカー</title>
+<meta name="description" content="群馬県内のゴルフ場を全部回るための記録帳。記録はこの端末の中だけに保存されます。">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#1d6b43" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#13201a" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<div class="app" id="app" data-view="home" data-detail="closed">
+  <header class="appbar">
+    <div class="appbar-inner">
+      <h1 class="brand"><span class="brand-daruma" id="brand-daruma" aria-hidden="true"></span><span>ゴルフ全制覇</span></h1>
+      <p class="appbar-count" id="appbar-count">— / —</p>
+    </div>
+    <nav class="tabs" aria-label="画面の切り替え">
+      <button type="button" class="tab" data-view="home">
+        <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 21V4m0 0h10l-2 3.5L16 11H6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span class="tab-label">進捗</span>
+      </button>
+      <button type="button" class="tab" data-view="list">
+        <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+        <span class="tab-label">一覧</span>
+      </button>
+      <button type="button" class="tab" data-view="guide">
+        <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6M12 7.5h.01" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+        <span class="tab-label">見方</span>
+      </button>
+      <button type="button" class="tab" data-view="settings">
+        <span class="tab-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.4 7.4 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.6Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+        <span class="tab-label">設定</span>
+      </button>
+    </nav>
+    <div class="banner" id="banner" hidden>
+      <button type="button" class="banner-btn" id="banner-btn"></button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="view" id="view-home" data-view="home" aria-label="進捗"></section>
+
+    <section class="view view-list" id="view-list" data-view="list" aria-label="コース一覧">
+      <div class="list-pane" id="list-pane">
+        <div class="list-search">
+          <label class="visually-hidden" for="q">コースを検索</label>
+          <input id="q" type="search" placeholder="コース名・市町村・読みで検索" enterkeyhint="search" autocomplete="off">
+          <button type="button" class="icon-btn q-clear" id="q-clear" aria-label="検索語を消す" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <div class="list-summary" id="list-summary" aria-live="polite"></div>
+        <div class="course-list" id="course-list"></div>
+        <div class="list-actions">
+          <button type="button" class="btn btn-secondary" id="open-filter">絞り込み・並び替え<span class="count-badge" id="filter-badge" hidden></span></button>
+          <button type="button" class="btn btn-primary" id="add-round">＋ 記録</button>
+        </div>
+      </div>
+      <section class="detail-pane" id="detail" aria-label="コースの詳細"></section>
+    </section>
+
+    <section class="view" id="view-guide" data-view="guide" aria-label="見方"></section>
+
+    <section class="view" id="view-settings" data-view="settings" aria-label="設定">
+      <div class="page">
+        <h2 class="page-title">設定</h2>
+
+        <section class="card card-backup" aria-labelledby="h-backup">
+          <h3 id="h-backup">バックアップ（記録の書き出し・読み込み）</h3>
+          <p class="note-warn">記録はこのスマホの中だけに保存されています。<strong>アプリをアンインストールしたり、Chromeのサイトデータを削除すると記録も消えます。</strong>ときどき書き出して、Googleドライブなどに保管してください。</p>
+          <p class="muted" id="backup-status"></p>
+          <div class="btn-col">
+            <button type="button" class="btn btn-primary" id="export-share">記録を書き出す（共有）</button>
+            <button type="button" class="btn btn-secondary" id="export-download">ファイルとして保存（ダウンロード）</button>
+            <button type="button" class="btn btn-secondary" id="import-btn">バックアップから読み込む</button>
+            <input type="file" id="import-file" accept=".json,.txt,application/json,text/plain" hidden>
+          </div>
+          <p class="result" id="backup-result" role="status"></p>
+        </section>
+
+        <section class="card" aria-labelledby="h-persist">
+          <h3 id="h-persist">保存の状態</h3>
+          <p id="persist-status" class="muted">確認しています…</p>
+          <p id="orphan-status" class="note-warn" hidden></p>
+          <button type="button" class="btn btn-secondary" id="persist-btn">消えにくい保存をもう一度お願いする</button>
+        </section>
+
+        <section class="card" aria-labelledby="h-about">
+          <h3 id="h-about">アプリについて</h3>
+          <dl class="kv" id="about-list"></dl>
+          <p class="muted">記録は外部に送信しません。公式サイトとGoogleマップのリンクを開いたときだけ、そのサイトへ移動します。</p>
+          <button type="button" class="btn btn-secondary" id="check-update">更新を確認</button>
+        </section>
+
+        <section class="card card-danger" aria-labelledby="h-clear">
+          <h3 id="h-clear">記録の全消去</h3>
+          <p class="muted">この端末の記録をすべて消します。元に戻すにはバックアップの読み込みが必要です。</p>
+          <button type="button" class="btn btn-danger" id="clear-all">すべての記録を消去</button>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<dialog class="sheet" id="filter-dialog" aria-labelledby="filter-title">
+  <div class="sheet-head">
+    <h2 id="filter-title">絞り込み・並び替え</h2>
+    <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+  </div>
+  <div class="sheet-body" id="filter-body"></div>
+  <div class="sheet-actions">
+    <button type="button" class="btn btn-secondary" id="filter-reset">リセット</button>
+    <button type="button" class="btn btn-primary" data-close id="filter-done">表示する</button>
+  </div>
+</dialog>
+
+<dialog class="sheet" id="round-dialog" aria-labelledby="round-title">
+  <form id="round-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="round-title">ラウンドを記録</h2>
+      <button type="button" class="icon-btn" data-close aria-label="閉じる"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="sheet-body">
+      <div class="field">
+        <label for="round-course">コース</label>
+        <select id="round-course" required></select>
+      </div>
+      <div class="field">
+        <label for="round-date">日付</label>
+        <input id="round-date" type="date" required>
+      </div>
+      <div class="field">
+        <label for="round-score">スコア（任意）</label>
+        <input id="round-score" type="number" inputmode="numeric" min="1" max="300" step="1" placeholder="例：92">
+      </div>
+      <div class="field">
+        <label for="round-memo">メモ（任意）</label>
+        <textarea id="round-memo" rows="3" maxlength="2000" placeholder="同伴者・天気・よかったホールなど"></textarea>
+      </div>
+      <p class="form-error" id="round-error" role="alert"></p>
+    </div>
+    <div class="sheet-actions">
+      <button type="button" class="btn btn-danger-ghost" id="round-delete" hidden>削除</button>
+      <button type="button" class="btn btn-secondary" data-close>キャンセル</button>
+      <button type="submit" class="btn btn-primary">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog class="alert" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-msg">
+  <h2 id="confirm-title"></h2>
+  <p id="confirm-msg"></p>
+  <div class="alert-actions">
+    <button type="button" class="btn btn-secondary" id="confirm-cancel">キャンセル</button>
+    <button type="button" class="btn btn-primary" id="confirm-ok">OK</button>
+  </div>
+</dialog>
+
+<dialog class="alert celebrate" id="celebrate-dialog" aria-labelledby="celebrate-title" aria-describedby="celebrate-msg">
+  <div class="celebrate-art" id="celebrate-art"></div>
+  <h2 id="celebrate-title">全制覇おめでとうございます！</h2>
+  <p id="celebrate-msg"></p>
+  <div class="alert-actions">
+    <button type="button" class="btn btn-primary" data-close>ありがとう</button>
+  </div>
+</dialog>
+
+<noscript><p class="noscript">このアプリはJavaScriptを使います。ブラウザの設定でJavaScriptを有効にしてください。</p></noscript>
+</body>
+</html>

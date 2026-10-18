@@ -1,0 +1,12 @@
+# 開発用の道具の依存と出力
+dev/node_modules/
+dev/out/
+
+# 記録のバックアップ（個人の記録はリポジトリに入れない）
+gunma-golf-backup-*
+*.backup.json
+
+# OS が作るファイル
+Thumbs.db
+desktop.ini
+.DS_Store
