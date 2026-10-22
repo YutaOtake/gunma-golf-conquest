@@ -6,7 +6,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { analyze } from '../rating.js';
+import { analyze, forgivingOf, compareForgiving } from '../rating.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.resolve(process.argv[2] || path.join(ROOT, 'dev', 'out'));
@@ -26,6 +26,9 @@ const desc = (a, b) => (a == null && b == null ? 0 : a == null ? 1 : b == null ?
 const EXPECTED_HARDEST = [...COURSES].sort((a, b) => b.difficulty - a.difficulty
   || desc(honraiCR(a), honraiCR(b)) || desc(a.gdo_upper_avg, b.gdo_upper_avg) || a.id - b.id)[0];
 const LAYOUT_SAMPLE = COURSES.find((c) => c.layout && analyze(c)?.rounds.length > 1) || COURSES.find((c) => c.layout);
+// 曲がっても安心順の期待値：rating.js の判定で並べたもの（統計の無いコースは末尾）
+const SAFE_RATED = COURSES.filter((c) => forgivingOf(c)).sort((a, b) => compareForgiving(forgivingOf(a), forgivingOf(b)) || a.id - b.id);
+const SAFE_NONE = COURSES.find((c) => !forgivingOf(c));
 
 // ---------- 配信（GitHub Pages 相当：サブパス・max-age=600・ETag） ----------
 const MIME = {
@@ -267,6 +270,19 @@ try {
     check(`${label}順：値のあるコースに順位、無いコースは末尾にまとめる`, keyed === withV.length && (await page.locator('.area-group .area-head').count()) === (withV.length < COURSES.length ? 1 : 0), `${keyed} / ${withV.length}`);
     await shot(`n390-list-sort-${key}`);
   }
+  {
+    await page.click('#filter-body label.chip:has(input[name="sort"][value="safe"])');
+    await sleep(150);
+    const top = forgivingOf(SAFE_RATED[0]);
+    const firstId = Number(await page.locator('.course-card').first().getAttribute('data-id'));
+    const firstKey = await page.locator('.course-card .cc-key').first().textContent();
+    check('曲がっても安心順：先頭が判定の最上位で「県内1位」', firstId === SAFE_RATED[0].id && firstKey.includes('県内1位') && firstKey.includes(`${top.hits}/3`), `${byId.get(firstId).name} ${firstKey}`);
+    const ids = (await page.locator('.course-card').evaluateAll((els) => els.map((e) => Number(e.dataset.id)))).slice(0, SAFE_RATED.length);
+    check('曲がっても安心順：並びが判定（条件の数→OB率→FWキープ率→広さ）と一致', ids.join() === SAFE_RATED.map((c) => c.id).join());
+    const keyed = await page.locator('.course-card .cc-key').count();
+    check('曲がっても安心順：統計のあるコースに順位、無いコースは末尾にまとめる', keyed === SAFE_RATED.length && (await page.locator('.area-group .area-head').count()) === (SAFE_RATED.length < COURSES.length ? 1 : 0), `${keyed} / ${SAFE_RATED.length}`);
+    await shot('n390-list-sort-safe');
+  }
   await page.click('#filter-body label.chip:has(input[name="sort"][value="name"])');
   await sleep(150);
   const firstName = await page.locator('.course-card .cc-name').first().textContent();
@@ -306,6 +322,26 @@ try {
     await shot('n390-detail-layout-table');
     await noHScroll('390 詳細（コース別の難易度）');
     await tapTargets('390 詳細（コース別の難易度）');
+    await back();
+    await openCourse(1);
+  }
+  if (SAFE_RATED.length) {
+    await back();
+    const sc = SAFE_RATED[0];
+    const f = forgivingOf(sc);
+    await openCourse(sc.id);
+    const rows = await page.locator('#detail .safe-sec table.rt tbody tr').count();
+    const st = await page.textContent('#detail .safe-sec');
+    check('詳細：曲がっても安心度（3項目・満たす数・OB率）', rows === 3 && st.includes(`${f.hits} / 3`) && st.includes(`${f.ob.toFixed(1)}%`), `${sc.name} ${rows}行`);
+    await page.evaluate(() => document.querySelector('#detail .safe-sec')?.scrollIntoView());
+    await shot('n390-detail-safe');
+    await noHScroll('390 詳細（曲がっても安心度）');
+    await tapTargets('390 詳細（曲がっても安心度）');
+    if (SAFE_NONE) {
+      await back();
+      await openCourse(SAFE_NONE.id);
+      check('詳細：統計の無いコースは「ありません」と出す', (await page.textContent('#detail .safe-sec')).includes('ありません'), SAFE_NONE.name);
+    }
     await back();
     await openCourse(1);
   }

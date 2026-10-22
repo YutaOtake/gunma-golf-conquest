@@ -1,4 +1,4 @@
-// コース別の難易度の判定（アプリと dev/apply-layouts.mjs の両方がこのファイルだけを読む）
+// コース別の難易度と「曲がっても安心度」の判定（アプリと dev/ の道具がこのファイルだけを読む）
 //
 // courses.json の各コースの layout（調べた事実）から、次を計算する：
 //   - 18Hの組み合わせごとに採用するレート：
@@ -200,4 +200,46 @@ function nineRatings(nines, rounds, prefGreen) {
     }
   }
   return out;
+}
+
+// ---------- 曲がっても安心度（じゃらんの統計と口コミ） ----------
+// courses.json の各コースの jalan（調べた事実）から、曲がる人でもスコアを崩しにくいかを3つの条件で見る。
+// 統計はじゃらんの「100〜119で回る人」の区分。全国平均（同じ区分）と比べる：
+//   1. OB率が全国平均（2.2%）の半分以下（1.0%以下）＝曲がってもOBになりにくい
+//   2. 口コミ「フェアウェイが広い」の平均が4.0以上（口コミ30件以上のときだけ判定に使う）
+//   3. FWキープ率が全国平均（50.3%）以上
+// じゃらんが 0.0% と出す値はデータ不足、FWキープ率 52.7% はデータ不足時の仮の値とみて、どちらも「不明」にする。
+export const FORGIVING = {
+  national: { ob: 2.2, fw: 50.3 },
+  obMax: 1.0,
+  wideMin: 4.0,
+  reviewsMin: 30,
+  fwMin: 50.3,
+  suspectFw: 52.7,
+};
+
+export function forgivingOf(course) {
+  const j = course && course.jalan;
+  if (!j) return null;
+  const pct = (v) => (isNum(v) && v > 0 ? v : null);
+  const ob = pct(j.ob_rate_100_119_pct);
+  const fwRaw = pct(j.fw_keep_100_119_pct);
+  const fwSuspect = fwRaw === FORGIVING.suspectFw;
+  const fw = fwSuspect ? null : fwRaw;
+  const wide = isNum(j.fairway_wide) ? j.fairway_wide : null;
+  const reviews = Number.isInteger(j.reviews) ? j.reviews : null;
+  if (ob == null && fw == null && wide == null) return null;
+  const fewReviews = wide != null && (reviews ?? 0) < FORGIVING.reviewsMin;
+  const conds = [
+    { key: 'ob', ok: ob != null && ob <= FORGIVING.obMax, known: ob != null },
+    { key: 'wide', ok: wide != null && !fewReviews && wide >= FORGIVING.wideMin, known: wide != null && !fewReviews },
+    { key: 'fw', ok: fw != null && fw >= FORGIVING.fwMin, known: fw != null },
+  ];
+  return { ob, fw, fwSuspect, wide, reviews, fewReviews, conds, hits: conds.filter((c) => c.ok).length, url: j.url || null };
+}
+
+// 安心な順：満たす条件の数 → OB率（低い順）→ FWキープ率（高い順）→ 広さ（高い順）。不明は各段で後ろ
+export function compareForgiving(a, b) {
+  const nl = (x, y, dir) => (x == null && y == null ? 0 : x == null ? 1 : y == null ? -1 : dir * (x - y));
+  return b.hits - a.hits || nl(a.ob, b.ob, 1) || nl(a.fw, b.fw, -1) || nl(a.wide, b.wide, -1);
 }

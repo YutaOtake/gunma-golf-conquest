@@ -11,6 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { analyze, LEVELS } from '../rating.js';
+import { parseOrdered, dumpNode, toNode as toNodeWith, get, set } from './ordered-json.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const COURSES = path.join(ROOT, 'courses.json');
@@ -21,78 +22,7 @@ const outPath = (args.find((a) => a.startsWith('--out=')) || '').slice(6) || COU
 
 const TEES = new Set(['チャンピオン', 'フルバック', 'バック', 'レギュラー', 'フロント', 'レディース', '不明']);
 const FLOAT_KEYS = new Set(['course_rating_back', 'gdo_upper_avg', 'cr']);
-
-// ---------- キーの順番と数字の書き方を保つ JSON の読み書き ----------
-// JS のオブジェクトは "3","2","1" のような数字キーを昇順に並べ替えるため、標準の JSON.parse では書式を保てない
-function parseOrdered(text) {
-  let i = 0;
-  const ws = () => { while (/\s/.test(text[i])) i += 1; };
-  function value() {
-    ws();
-    const ch = text[i];
-    if (ch === '{') {
-      i += 1; const pairs = []; ws();
-      if (text[i] === '}') { i += 1; return { t: 'o', pairs }; }
-      for (;;) {
-        ws(); const k = JSON.parse(str()); ws();
-        if (text[i] !== ':') throw new Error(`':' が無い（${i}文字目）`);
-        i += 1; pairs.push([k, value()]); ws();
-        if (text[i] === ',') { i += 1; continue; }
-        if (text[i] === '}') { i += 1; return { t: 'o', pairs }; }
-        throw new Error(`オブジェクトの区切りが不正（${i}文字目）`);
-      }
-    }
-    if (ch === '[') {
-      i += 1; const items = []; ws();
-      if (text[i] === ']') { i += 1; return { t: 'a', items }; }
-      for (;;) {
-        items.push(value()); ws();
-        if (text[i] === ',') { i += 1; continue; }
-        if (text[i] === ']') { i += 1; return { t: 'a', items }; }
-        throw new Error(`配列の区切りが不正（${i}文字目）`);
-      }
-    }
-    if (ch === '"') return { t: 'raw', raw: str() };
-    const m = /^(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?|true|false|null)/.exec(text.slice(i));
-    if (!m) throw new Error(`値が読めない（${i}文字目）`);
-    i += m[0].length;
-    return { t: 'raw', raw: m[0] };
-  }
-  function str() {
-    const start = i; i += 1;
-    while (text[i] !== '"') i += text[i] === '\\' ? 2 : 1;
-    i += 1;
-    return text.slice(start, i);
-  }
-  const v = value(); ws();
-  if (i !== text.length) throw new Error('末尾に余分な文字');
-  return v;
-}
-function dumpNode(node, indent = 0) {
-  const pad = ' '.repeat(indent + 1);
-  const end = ' '.repeat(indent);
-  if (node.t === 'raw') return node.raw;
-  if (node.t === 'a') {
-    if (!node.items.length) return '[]';
-    return `[\n${node.items.map((v) => pad + dumpNode(v, indent + 1)).join(',\n')}\n${end}]`;
-  }
-  if (!node.pairs.length) return '{}';
-  return `{\n${node.pairs.map(([k, v]) => `${pad}${JSON.stringify(k)}: ${dumpNode(v, indent + 1)}`).join(',\n')}\n${end}}`;
-}
-// 普通の値 → ノード（新しく入れる layout など。キー順は渡した順、小数のキーは 73.0 の形）
-function toNode(v, key = null) {
-  if (v === null || v === undefined) return { t: 'raw', raw: 'null' };
-  if (typeof v === 'number') return { t: 'raw', raw: FLOAT_KEYS.has(key) && Number.isInteger(v) ? v.toFixed(1) : String(v) };
-  if (typeof v === 'string' || typeof v === 'boolean') return { t: 'raw', raw: JSON.stringify(v) };
-  if (Array.isArray(v)) return { t: 'a', items: v.map((x) => toNode(x, key)) };
-  if (v instanceof Map) return { t: 'o', pairs: [...v].map(([k, x]) => [k, toNode(x, k)]) };
-  return { t: 'o', pairs: Object.keys(v).map((k) => [k, toNode(v[k], k)]) };
-}
-const get = (obj, key) => obj.pairs.find(([k]) => k === key)?.[1];
-function set(obj, key, node) {
-  const p = obj.pairs.find(([k]) => k === key);
-  if (p) p[1] = node; else obj.pairs.push([key, node]);
-}
+const toNode = (v) => toNodeWith(v, FLOAT_KEYS);
 
 const original = fs.readFileSync(COURSES, 'utf8');
 const tree = parseOrdered(original);

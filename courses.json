@@ -25,7 +25,8 @@
   },
   "course_rating_back": "バックティのJGAコースレート（null=未取得）",
   "gdo_upper_avg": "GDOスコア 2025/10〜2026/9集計、86〜95のゴルファーの18H平均（null=未取得）",
-  "elevation_m": "地図からの概算。数十〜100m程度の誤差あり"
+  "elevation_m": "地図からの概算。数十〜100m程度の誤差あり",
+  "jalan": "じゃらんゴルフの各コースのページ（2026-10-22取得）。OB率・FWキープ率はスコア統計の「100〜119で回る人」の区分（集計期間 2024年10月〜2026年9月、同じ区分の全国平均はOB率2.2%・FWキープ率50.3%）。フェアウェイの広さは口コミの5段階評価の平均。0.0%の表示はデータ不足、FWキープ率52.7%はデータ不足時の仮の値とみて判定に使わない。"
  },
  "extra_not_counted": [
   {
@@ -136,6 +137,15 @@
      "コースレートは公式・GORA に記載なし。じゃらんの 71.7/69.7/69.1 は旧ティ構成（バック6,795Y・レギュラーあり）時点の値とみられ、現行の BLACK/FRONT ティとの対応は不明。フロント69.1がレギュラー69.7に近く不自然だが原文どおり"
     ],
     "note": "2020年に草津高原ゴルフ場から改称（GORA disp 記載「2020年よりゴルフ場名称を「草津温泉ゴルフ場」変更」）。HDCPは公式・GORA・ShotNaviで一致（OUTに1、INに2）。スロープはどの出典にも無し。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00715/",
+    "fairway_wide": 3.8,
+    "reviews": 174,
+    "ob_rate_100_119_pct": 0.6,
+    "fw_keep_100_119_pct": 57.7,
+    "ob_rate_pct": 0.6,
+    "fw_keep_pct": 55.5
    }
   },
   {
@@ -250,6 +260,15 @@
      "LADIES：公式 2,805/2,909／GORAヤード表 2,428/2,345"
     ],
     "note": "公式のティ名は BACK/REGULER/FRONT/LADIES（ホール詳細では B.T/R.T/F.T/L.T）で色の記載なし。tee『バック』はGORAのブラックをヤード一致で対応づけたもの。2026年8月にISPS HANDAのツアー開催（公式お知らせ）。トーナメント時のセッティングのレートは未確認。スロープはどの出典にも無し。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00714/",
+    "fairway_wide": 4.0,
+    "reviews": 29,
+    "ob_rate_100_119_pct": 0.6,
+    "fw_keep_100_119_pct": 40.0,
+    "ob_rate_pct": 0.4,
+    "fw_keep_pct": 46.8
    }
   },
   {
@@ -546,6 +565,15 @@
      "CR の値自体は公式・plus-web・ShotNavi で一致（浅間71.8・白樺70.0）。食い違いなし"
     ],
     "note": "公式のCourseRate行は列の並びで各ティに対応（浅間：Championship『-』/Back 71.8/Regular 70.0/Front 67.6/Ladies 65.2。白樺：Back 70.0/Regular 68.8/Front 66.9/Ladies 64.8）。概要欄『JGAコースレート 浅間71.8／白樺70.0』はBack列と一致。白樺にChampionshipティは無い。HDCPは公式・GORA一致（各OUTに1、各INに2）。【現状】白樺コースを全面改修中（ダナ・フライ／ジェイソン・ストラカ設計、2028年4月グランドオープン予定）。2026/5/1〜11/30 は白樺OUTを閉鎖して27ホール営業（浅間OUT・浅間IN・白樺IN）、2027年は白樺INが工事予定。27H時の組み合わせは公式お知らせの画像のみでテキストなし。ハンディキャップ用スコア提出は浅間OUT→浅間INの18Hのみ有効（https://www.taiheiyoclub.co.jp/course/karuizawa/topics/lrhh7f000000p3c7.html）。2026/9/14〜白樺11番が使用不可で仮設11番（https://www.taiheiyoclub.co.jp/course/karuizawa/topics/lrhh7f000000q5tu.html）。白樺の現行レート70.0は改修前コースの値で、改修後は変わる見込み。浅間は2023年に改修完了済みだが71.8が改修後の査定かは未確認。ティの色・スロープはどの出典にも記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00710/",
+    "fairway_wide": 4.3,
+    "reviews": 96,
+    "ob_rate_100_119_pct": null,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 0.0,
+    "fw_keep_pct": 46.0
    }
   },
   {
@@ -649,6 +677,15 @@
      "改称時期：courses.json memo『2025年10月改称』／公式サイト・ANAホリデイ・イン公式ページ『2025年9月に名称変更』"
     ],
     "note": "旧 プレジデントカントリー倶楽部軽井沢。courses.json の course_rating_back 72.3 は公式のバックと一致。公式の色対応は『Tee It Forward』注記の『赤（フロント2）・緑（フロント）・白（レギュラー）』『青（バック）』による（緑=表のフロント1と対応づけ）。女性用CR（バック78.5/レギュラー75.5/フロント1 72.1/フロント2 68.5）は ratings に入れていない。スロープはどの出典にも記載なし。HDCPは公式・GORA一致（OUT4番=1、IN13番=2）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00709/",
+    "fairway_wide": 3.0,
+    "reviews": 97,
+    "ob_rate_100_119_pct": 1.4,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 1.0,
+    "fw_keep_pct": 44.4
    }
   },
   {
@@ -728,6 +765,15 @@
      "公式の距離(Y)行：REGULAR 6,383・FRONT 6,155／OUT+IN の合計は REGULAR 6,379・FRONT 6,152（BACK 6,811・PRINCE 5,468 は一致）"
     ],
     "note": "9Hの呼び名は公式・GORA・じゃらんとも『白根コース OUT／白根コース IN』。公式のティ名は BACK/REGULAR/FRONT/PRINCE（色の記載なし）。HDCPは公式・GORA・ShotNavi一致（OUT5番=1、IN15番=2）。スロープはどの出典にも無し。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00712/",
+    "fairway_wide": 4.5,
+    "reviews": 90,
+    "ob_rate_100_119_pct": 0.4,
+    "fw_keep_100_119_pct": 45.2,
+    "ob_rate_pct": 0.3,
+    "fw_keep_pct": 50.4
    }
   },
   {
@@ -822,6 +868,15 @@
      "GORAレート表の『フロント 5,381Y』は公式の GOLD 合計 5,426 と一致せず、どのティかは不明"
     ],
     "note": "公式のティ名は BACK/REG/GOLD/LADIES（out.html では Back TEE / Regular TEE）。色・コースレート・スロープは公式に記載なし。GORAのヤード表のHDCP行は全て0表示。hdcp は公式・ShotNavi（一致：OUT6番=1、IN14番=2）による。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00711/",
+    "fairway_wide": 3.4,
+    "reviews": 108,
+    "ob_rate_100_119_pct": 0.5,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 0.6,
+    "fw_keep_pct": 53.7
    }
   },
   {
@@ -1080,6 +1135,15 @@
      "GDOではレギュラー70.7・フロント68.9とする情報あり（検索要約のみ: https://reserve.golfdigest.co.jp/golf-course/335103/course-info/ ／403サイトのため未確認）"
     ],
     "note": "公式サイト http://www.hatsuhocc.co.jp/ はWebFetchがHTTPSへ昇格させ証明書不一致で開けず、公式の数値は未確認。GORAのスコアカードは色名（Black/Blue/White/Red）のみで、レート表のティ名（バック/レギュラー/フロント/レディース1・2）との対応はページに明記なし。tee_names と yards_reg は18H合計ヤードの完全一致で対応付けた（Black=バック7,206、Blue=レギュラー6,760、White=フロント6,375、Red=レディース2 5,310。レディース1 5,825に対応する色は表に無い）。HDCPはGORA・ShotNaviで一致。スロープはどの出典にも無い。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00721/",
+    "fairway_wide": 4.2,
+    "reviews": 66,
+    "ob_rate_100_119_pct": 2.1,
+    "fw_keep_100_119_pct": 42.7,
+    "ob_rate_pct": 2.0,
+    "fw_keep_pct": 51.8
    }
   },
   {
@@ -1169,6 +1233,15 @@
      "じゃらんの『レギュラー』（スカイ OUT 2,952・IN 3,036／フォレスト OUT 2,890・IN 2,963）は公式WHITEでなくSILVERに近い値が混在"
     ],
     "note": "コースレートは公式・GORA・ShotNavi（両コースとも『--』）・じゃらん（『－』）のいずれにも無く、plus-webの掲載も見つからない（パブリックのためか）。BLUE=バックは公式FAQ『バックティ（ブルーティ）』で確認。WHITE=レギュラーは公式に明記なし（ShotNaviの『Regular』IN合計が公式WHITEと一致することからWHITEとした）。HDCPは公式スコア表に行が無くGORAは全ホール『-』。スカイ4番は公式本文に『ハンディキャップNo.1ホール』とあるため、指定ルールに従いスカイOUTを odd とし、他の3つは null。ShotNaviの旧名：スカイ＝コブシ（こぶし）コース、フォレスト＝カラ松コース。バックティ（ブルー）はハーフ2時間15分以内の組に限りマスター室へ使用申請が必要（公式FAQ）。冬季クローズ。feature の『上級者平均93.2』は今回の出典では検証できず。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00723/",
+    "fairway_wide": 4.0,
+    "reviews": 103,
+    "ob_rate_100_119_pct": 1.4,
+    "fw_keep_100_119_pct": 45.5,
+    "ob_rate_pct": 1.7,
+    "fw_keep_pct": 49.4
    }
   },
   {
@@ -1280,6 +1353,15 @@
      "レギュラー：公式 OUT 3,104・IN 3,258（計6,362）／GORAレート表 6,355Y／plus-web・じゃらんは IN 3,216（12番363、公式は405）"
     ],
     "note": "公式（course.html・course_out.html・course_in.html）はティ名 BACK/REGULAR/LADYS でHDCP・色・コースレートの記載なし。HDCPはGORAのみ（OUTに1、INに2）。GORAレート表のバック1/バック2の違い（どのティ位置か）はページに説明なし。feature『18番600y超』は公式18番BACK 606yで一致。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00717/",
+    "fairway_wide": 4.0,
+    "reviews": 84,
+    "ob_rate_100_119_pct": 2.1,
+    "fw_keep_100_119_pct": 35.4,
+    "ob_rate_pct": 1.1,
+    "fw_keep_pct": 37.0
    }
   },
   {
@@ -1438,6 +1520,15 @@
      "feature『サブグリーン5,902y』はGORAのサブ・レギュラー5,902Yと一致（公式には該当表記なし）"
     ],
     "note": "公式（アコーディア）はベント2グリーン、ティは Blue/White/Green/Red（ドラコン8・16番、ニアピン5・13番）。公式の『第1/第2グリーン』とGORAの『メイン/サブ』の対応はどちらのページにも明記なし。Blue=バック・White=レギュラーは公式の色別ヤードがShotNaviの Back/Regular 列と完全一致することによる。HDCPは公式・GORA・ShotNaviで一致（OUTに1、INに2）。旧 上毛森林CC（閉鎖）とは別のゴルフ場。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00719/",
+    "fairway_wide": 3.5,
+    "reviews": 270,
+    "ob_rate_100_119_pct": 1.3,
+    "fw_keep_100_119_pct": 55.0,
+    "ob_rate_pct": 0.7,
+    "fw_keep_pct": 57.2
    }
   },
   {
@@ -1502,6 +1593,15 @@
      "総距離：GORA距離欄 6,532Y（じゃらんのバック合計と一致）／GORA表のBack合計 6,503Y（ShotNavi総ヤードと一致）／plus-web 6,385yard"
     ],
     "note": "コースレートは plus-web で『未査定』、ShotNavi『--』、じゃらん『－』、GORAに記載なし＝未査定と見られる。公式 kan-etsu-gc.com のコース案内（course.html）は『準備中』で数値なし。ティ名は Back/Regular/Ladies（色の記載なし）。HDCPはGORA・じゃらんで一致（OUTに1、INに2）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00718/",
+    "fairway_wide": 3.2,
+    "reviews": 110,
+    "ob_rate_100_119_pct": 1.0,
+    "fw_keep_100_119_pct": 41.2,
+    "ob_rate_pct": 0.8,
+    "fw_keep_pct": 46.3
    }
   },
   {
@@ -1611,6 +1711,15 @@
      "ShotNavi のコースレート 73.3 はコース・ティの記載なし（plus-web のあららぎ73.3と同値）: https://shotnavi.jp/gcguide/gcinfo_588.htm"
     ],
     "note": "現状：GORAは27H（あららぎ18H＋もみの木9H）と表記し、お知らせにレストラン・ロッカー・風呂は利用不可（食事持参）、18Hは時間内プレー・追加9H無料、最終スタート13:30とあり縮小営業の様子。GORAのレイアウトはもみの木OUT/INの両方を載せたままで、営業中のもみの木9HがOUT/INどちらかは不明。plus-webのデータは2016年9月更新。公式サイト候補 minohara-cc.jp は無関係に見える別ドメイン（lovegolf.click）へ301転送されたため開いていない（courses.json の url null は妥当）。ティ名は GORA『BT/RT』、plus-web『BACK/レギュラー』、ShotNavi『Back/Regular』で数値が一致。色の記載なし。HDCPはGORAのみ（あららぎ・もみの木ともOUTに1、INに2）。GORAの抽出時にあららぎOUTのPAR行が一部欠けていたが、9H計37はGORA・plus-web・ShotNaviで一致。feature『上級者平均99.8』は今回の出典では検証できず。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00705/",
+    "fairway_wide": 4.1,
+    "reviews": 200,
+    "ob_rate_100_119_pct": null,
+    "fw_keep_100_119_pct": 52.4,
+    "ob_rate_pct": 0.1,
+    "fw_keep_pct": 60.4
    }
   },
   {
@@ -1745,6 +1854,15 @@
      "組み合わせが特定できないレート：不明 72.7（https://www.shotnavi.jp/gcguide/gcinfo_540.htm）"
     ],
     "note": "公式はティ名 Back T./Front T./Ladies T.（『レギュラー』の呼称なし）で、2グリーン（茜/藍）ごとにヤードが異なる。yards_back/yards_reg は茜グリーンの Back T./Front T.（GORA・ShotNavi・じゃらんの表も同値）。藍グリーンは Back 吾妻3,481・烏帽子3,352・音羽3,531／Front 3,223・3,076・3,322。HDCPは各9Hで1〜9の独立番号（公式・GORA・ShotNaviとも。HDCP1は吾妻5番・烏帽子5番・音羽7番）のため奇偶区分は当てはまらず null。組み合わせは GORA で 音羽×吾妻・吾妻×烏帽子・烏帽子×音羽 の3通り（公式は『音羽→吾妻』が一番人気と記載）。ratings_unassigned は組み合わせが特定できないレート（GORAのグリーン別表とShotNaviの単一値）。plus-web a=5908 は清瀧城コース（18H・CR71.00、2014年閉鎖）で対象外。ShotNaviの旧名は『伊香保ゴルフ倶楽部 岡崎城コース』。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00706/",
+    "fairway_wide": 4.1,
+    "reviews": 165,
+    "ob_rate_100_119_pct": 1.2,
+    "fw_keep_100_119_pct": 50.1,
+    "ob_rate_pct": 1.3,
+    "fw_keep_pct": 49.5
    }
   },
   {
@@ -1862,6 +1980,15 @@
      "memo「60周年で大改修」：公式・GORA・plus-web・じゃらんに改修の記述なし（未確認）"
     ],
     "note": "18H・2グリーン（つつじ／さくら。公式・GORAとも意味の説明はないが、GORAのレート表でグリーン区分として使われている）。nines の yards_back は つつじ×GREENティ。さくら×GREEN は OUT3,438/IN3,337=6,775。BLUE（参考）：つつじ OUT3,278/IN3,295、さくら OUT3,121/IN3,150。GORAのスコアカード表はさくらの値。公式にはCR・スロープの表なし（トップの73.4のみ）。GORAにはフロント1/2・レディース1のCRもあり（つつじ 70.1/66.4/60.5、さくら 68.7/65.1/58.9）。tee/green の扱いのため ratings に green・tee_label を追加。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00689/",
+    "fairway_wide": 4.0,
+    "reviews": 4,
+    "ob_rate_100_119_pct": 2.8,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 1.3,
+    "fw_keep_pct": null
    }
   },
   {
@@ -1977,6 +2104,15 @@
      "総ヤード：GORA 9,753Y／plus-web・ShotNavi 9,758／じゃらん 9,664"
     ],
     "note": "27H（赤城・榛名・伊香保）。組み合わせはGORA表記で 赤城×榛名・榛名×伊香保・伊香保×赤城。伊香保コースはパー35（伊香保を含む組み合わせは18Hパー71）。HDCPは公式・GORA・ShotNaviとも各9H内で1〜9の付番のため奇偶は判定不可（null）。公式サイトにCRの掲載なし。CRはplus-web（ティ不明）のみ組み合わせ別。改修・閉鎖の記述は見当たらず。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00655/",
+    "fairway_wide": 3.8,
+    "reviews": 217,
+    "ob_rate_100_119_pct": 0.9,
+    "fw_keep_100_119_pct": 36.2,
+    "ob_rate_pct": 0.7,
+    "fw_keep_pct": 41.8
    }
   },
   {
@@ -2130,6 +2266,15 @@
      "HDCPは公式（course.html/course_out.html/course_in.html）に記載なく、GORAのみの単一出典（ShotNaviも記載なし）"
     ],
     "note": "18H・1グリーン。公式に9H別のCR・スロープ（男子）あり：Back2 OUT35.9(126)/IN36.6(133)、Back OUT35.5(126)/IN36.3(132)、Regular OUT34.7(122)/IN35.1(128)。Front 67.7(121)・Ladies 64.4(114)。チャンピオンティのヤードは OUT3,453/IN3,665＝7,118（公式）。plus-webはミッドティの存在に言及。改修の記述なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00688/",
+    "fairway_wide": 4.3,
+    "reviews": 112,
+    "ob_rate_100_119_pct": 0.9,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 0.8,
+    "fw_keep_pct": 47.7
    }
   },
   {
@@ -2225,6 +2370,15 @@
      "plus-webのホール概要表は BACK OUT 2,813 < REG 3,105 等で内部不整合（数値は不採用）"
     ],
     "note": "18H・1グリーン・フラット。公式サイトにCRの掲載なし（本文は文字化けだが表の数値は判読可）。feature の「バック7,010y」は公式と一致。「上級者平均88.5」は出典で確認できず（未検証）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00677/",
+    "fairway_wide": 4.0,
+    "reviews": 36,
+    "ob_rate_100_119_pct": 0.1,
+    "fw_keep_100_119_pct": 59.6,
+    "ob_rate_pct": 0.1,
+    "fw_keep_pct": 68.1
    }
   },
   {
@@ -2388,6 +2542,15 @@
      "feature「サブグリーンで5,773y」：確認した出典に該当する値なし（未検証）"
     ],
     "note": "27H（北・中・南）・2グリーン（第1／第2）。回り順は北→中→南→北（公式・GORA）。公式のCRはティの記載なし（第1グリーンが高い）。HDCPは公式・ShotNaviとも各9H内1〜9の付番で奇偶判定不可（null）。公式に「工事や積雪等により予告なく（回り順を）変更する場合がございます」とあるが、具体的な改修・閉鎖告知はなし。アコーディア運営。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00678/",
+    "fairway_wide": 3.6,
+    "reviews": 348,
+    "ob_rate_100_119_pct": 1.4,
+    "fw_keep_100_119_pct": 47.3,
+    "ob_rate_pct": 0.9,
+    "fw_keep_pct": 51.5
    }
   },
   {
@@ -2525,6 +2688,15 @@
      "HDCP：公式（第1グリーン）は南=奇数・西=偶数・東=1〜9 vs GORA・ShotNaviは3コースとも1〜9の付番（値も公式と別。GORAの東は公式第2グリーンの値と同じ）"
     ],
     "note": "27H（南・西・東）・2グリーン。nines と CR は第1グリーンの値（公式CRは「バックティー 第1グリーン」のみ、レギュラーのCRは公式に無い）。第2グリーンのバック：南3,368・西3,279・東3,479（HDCPは各1〜9）。GORAのレート表（組み合わせ記載なし）：第1G 黒73.0/青71.3(6,665Y)/白69.9(6,382Y)/緑67.0/赤65.4/ピンク64.0、第2G 黒70.6(6,635Y)/青69.2/白68.6…。feature の「南×東は7,133y・CR73.4」は公式と一致。改修の記述なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00679/",
+    "fairway_wide": 3.9,
+    "reviews": 113,
+    "ob_rate_100_119_pct": 1.8,
+    "fw_keep_100_119_pct": 44.6,
+    "ob_rate_pct": 1.2,
+    "fw_keep_pct": 46.3
    }
   },
   {
@@ -2584,6 +2756,15 @@
     },
     "conflicts": [],
     "note": "18H・1グリーン（GORA）。グレッグ・ノーマン設計。CRはどの出典でも取れず：公式・GORA・じゃらん（https://golf-jalan.net/gc00690/detail/）は記載なし、plus-web（https://www.plus-web.co.jp/guide/?a=5947）は「コースレート:未査定」、ShotNaviは「--」。ヤード・パー・HDCPは公式・GORA・ShotNavi・plus-web・じゃらんで一致。公式に「蘇ったティー・グリーン」としてティーグラウンドとグリーンの改修告知あり（写真は令和3年7月25日撮影）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00690/",
+    "fairway_wide": 2.9,
+    "reviews": 395,
+    "ob_rate_100_119_pct": 2.2,
+    "fw_keep_100_119_pct": 43.5,
+    "ob_rate_pct": 1.7,
+    "fw_keep_pct": 53.7
    }
   },
   {
@@ -2695,6 +2876,15 @@
      "HDCP：ShotNaviは2番5・3番3・9番9 vs 公式・GORA・じゃらんは2番3・3番9・9番5（OUTが奇数側である点は一致）"
     ],
     "note": "18H・河川敷・フラット。ヤード・パーは公式・GORA・ShotNavi・じゃらんで一致（BLUE 6,333／WHITE 6,018）。公式にスロープ・改修の記述なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00650/",
+    "fairway_wide": 3.9,
+    "reviews": 76,
+    "ob_rate_100_119_pct": 0.5,
+    "fw_keep_100_119_pct": 38.4,
+    "ob_rate_pct": 0.4,
+    "fw_keep_pct": 49.3
    }
   },
   {
@@ -2765,6 +2955,15 @@
      "feature『距離短めのカジュアルコース』⇔ 公式 CHAMPION 7,043y・BACK 6,609y（距離は短くない）"
     ],
     "note": "公式サイト https://www.shibukan.jp/（所在地 渋川市石原羽生平2257-12）。memoの『閉鎖した渋川市民ゴルフ場』とは別のゴルフ場であることを住所で確認。ティは5種（チャンピオン黒・バック青・レギュラー白・レディース赤・シルバー黄）。yards_back は公式の呼称どおり BACK（青）を入れ、最長の CHAMPION（黒）は yards_champion に分けた。HDCP は公式のホール別ページ（OUT 15,9,11,5,3,13,1,7,17／IN 10,14,2,18,4,6,8,16,12）と楽天GORA・ShotNaviが一致。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00656/",
+    "fairway_wide": 4.1,
+    "reviews": 191,
+    "ob_rate_100_119_pct": 1.7,
+    "fw_keep_100_119_pct": 69.3,
+    "ob_rate_pct": 1.3,
+    "fw_keep_pct": 66.8
    }
   },
   {
@@ -2905,6 +3104,15 @@
      "ShotNavi の『Back』列（OUT 3,172／IN 3,255）は公式の BLACK ではなく BLUE（Regular）に近い値（https://www.shotnavi.jp/gcguide/gcinfo_534.htm）"
     ],
     "note": "公式の呼称：BACK＝BLACK（メンバー〔メンバー同伴・競技用・スタート室要申請〕）、REGULAR＝BLUE（アスリート推奨）、FRONT＝WHITE（通常使用ティー＝コンペ使用ティー）。旧 ベルエアCC→JGMゴルフクラブ高崎ベルエアコース→2015年に現名称（ShotNavi）。旧ドメイン jgmbelaire.co.jp は https://www.jgmgroup.co.jp/belaire/ へ転送。公式ページ内でも GOLD・RED の一部ホール値がホール別欄とヤーデージ表で食い違う（バック・レギュラーには影響なし）。スロープの記載はどの出典にもなし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00684/",
+    "fairway_wide": 4.2,
+    "reviews": 201,
+    "ob_rate_100_119_pct": 1.0,
+    "fw_keep_100_119_pct": 54.7,
+    "ob_rate_pct": 1.2,
+    "fw_keep_pct": 53.0
    }
   },
   {
@@ -3074,6 +3282,15 @@
      "ShotNavi本文の『これから新たに計測するコースレートは未知数』は検索要約のみ: https://shotnavi.jp/gcguide/gcinfo_533.htm（WebFetchでは確認できず）"
     ],
     "note": "旧 プレスCC→レーサム ゴルフ＆スパ リゾート（2008）→THE RAYSUM（2021年改修後）→2023年に現名称（plus-web ニュース 2023/02/07『コース名変更のお知らせ』）。公式 https://tcgv.jp/ は『完全会員制』でコースデータの掲載なし（メンバー専用ページは外部ログイン）。2021年の改修で池・ティ・バンカー・グリーンを変更しており、plus-web・ShotNavi・じゃらんには改修前とみられる旧カードが混在。HDCP は楽天GORAのみ（OUT 15,3,9,1,13,7,17,5,11／IN 16,10,4,14,2,8,18,6,12）。ティは色名のみで、バック/レギュラーの対応は plus-web の行名との数値一致によるもので公式の明記ではない。スロープの記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00676/",
+    "fairway_wide": null,
+    "reviews": null,
+    "ob_rate_100_119_pct": null,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 0.4,
+    "fw_keep_pct": null
    }
   },
   {
@@ -3237,6 +3454,15 @@
      "じゃらんの IN HDCP（10,16,4,14,8,6,18,12,記載なし）が公式（10,16,4,2,14,8,6,18,12）とずれている"
     ],
     "note": "公式 http://www.shimoakima.co.jp/ はHTTPSの証明書が不一致でWebFetch不可のため、HTTPで本文を確認。公式：2013年7月に JGA/USGA 公認コースレート75.4を取得。BLACK（モンスターティ 7,403y）は会員専用で、ビジターは会員同伴またはキャディ付のみ。プロ競技は日本プロ（1992）・日本プロシニア（1988〜1999 連続12回）・関東プロ（1987）。設計 ビリー・キャスパー、改造監修 石井朝夫（memoと一致）。feature の『県内No.1のコースレート（バック7,403y）』の 7,403y は公式と一致。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00672/",
+    "fairway_wide": 3.3,
+    "reviews": 16,
+    "ob_rate_100_119_pct": 0.3,
+    "fw_keep_100_119_pct": 47.3,
+    "ob_rate_pct": 0.7,
+    "fw_keep_pct": 47.1
    }
   },
   {
@@ -3333,6 +3559,15 @@
      "IN レギュラー：公式・楽天GORA・ShotNavi 3,195（14番465）⇔ plus-web・じゃらん 3,165（14番435）（https://www.plus-web.co.jp/guide/?a=5909 ／ https://golf-jalan.net/gc00674/detail/）"
     ],
     "note": "公式のヤーデージ表のティ色は、表見出しのアイコン画像名（blue_l.gif・white_l.gif・perple_l.gif・red_l.gif）による（文字での色の記載はなし）。公式の表記は『REGULER』。CR は公式・plus-web・ShotNavi で 69.6 が一致。スロープの記載なし。設計 加藤俊輔（feature と一致）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00674/",
+    "fairway_wide": 3.5,
+    "reviews": 77,
+    "ob_rate_100_119_pct": 0.8,
+    "fw_keep_100_119_pct": 56.9,
+    "ob_rate_pct": 1.2,
+    "fw_keep_pct": 52.3
    }
   },
   {
@@ -3434,6 +3669,15 @@
     },
     "conflicts": [],
     "note": "公式・楽天GORA・ShotNavi・plus-web でヤード・HDCP・CR（バック69.0）が一致。公式のスコア表は CourseRate 行が Back 69.0／Regular 68.0／Ladies 65.6（HTMLの列で確認）、本文にも『JGAコースレート：69.0』。開場1976年、設計 加藤俊輔・改造 本間典雄。楽天GORAはグリーン数『2グリーン』・種別『丘陵』・高低差『山岳』と表記（公式は『なだらかな高原』の広陵コース）。feature の『山岳コース』は GORA の高低差表記とは合うが種別は丘陵。スロープの記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00675/",
+    "fairway_wide": 3.4,
+    "reviews": 216,
+    "ob_rate_100_119_pct": 2.5,
+    "fw_keep_100_119_pct": 50.6,
+    "ob_rate_pct": 1.9,
+    "fw_keep_pct": 53.8
    }
   },
   {
@@ -3499,6 +3743,15 @@
      "総ヤード：公式 BLACK 6,755（3,443＋3,312）⇔ 楽天GORA『距離 6,806Y』（同ページの表は 6,755）⇔ じゃらん バック 6,806（3,472＋3,334、3・8・12・17番が長い旧カード）⇔ plus-web 表記 6,755 だがホール表 BACK は 3,472＋3,334"
     ],
     "note": "公式 http://www.takanashiclub.jp/（表記は『髙梨子倶楽部』）。2016年にパブリック制へ運営転換（plus-web ニュース 2016/09/20）。公式は『フラット林間』・コース内高低差30m、楽天GORA・plus-web は『丘陵』。yards_back／yards_reg は公式の BLACK／BLUE の値を入れたが、バック/レギュラーとの対応はじゃらんの呼び名による（公式に明記なし）。スロープの記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00703/",
+    "fairway_wide": 3.8,
+    "reviews": 95,
+    "ob_rate_100_119_pct": 1.5,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 1.1,
+    "fw_keep_pct": 55.3
    }
   },
   {
@@ -3561,6 +3814,15 @@
      "OUT/INバックのヤード：GORA・じゃらん・ShotNavi は OUT 3,165／IN 3,250（計6,415）／plus-web のホール別表は OUT 3,160／IN 3,240（2番 168 vs 173、17番 385 vs 395。plus-web上部の総距離表記は6,415で自表の合計6,400と不一致） https://www.plus-web.co.jp/guide/?a=5959"
     ],
     "note": "コースレートはどの出典にも数値なし（plus-web「未査定」、ShotNavi「--」、じゃらん「－」、GORAは項目なし）。ティ名は GORA がバック/レギュラー/レディース、ShotNavi が Back/Reg./Ladies で色の記載なし。公式サイトは見つからず。旧名は plus-web で「松井田妙義ゴルフ倶楽部」（featureの旧名と一致）、改称年（memo 2014年）は未確認。HDCP1は6番（OUT）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00704/",
+    "fairway_wide": 3.4,
+    "reviews": 621,
+    "ob_rate_100_119_pct": 2.7,
+    "fw_keep_100_119_pct": 48.3,
+    "ob_rate_pct": 2.2,
+    "fw_keep_pct": 52.7
    }
   },
   {
@@ -3701,6 +3963,15 @@
      "GORAのコースレート表のヤード（レギュラー6,438・フロント1 6,056）が同ページのヤーデージ表（Blue 6,417・White 6,042）と食い違う"
     ],
     "note": "yards_back は CR バック72.7 と対応する Black（GORA）の値を採用。公式（アコーディア）のヤーデージ表には Black が無く Blue が最長なので、Black ティが現在も使われているかは未確認。yards_reg は ShotNavi の Reg.＝White（公式・じゃらんも White 3,028/3,014）。GORAのコースレートは「男性」タブ・組み合わせ OUT x IN の値。旧名は妙義スプリングスCC（plus-web）。HDCP1は5番（OUT）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00698/",
+    "fairway_wide": 4.1,
+    "reviews": 284,
+    "ob_rate_100_119_pct": 1.3,
+    "fw_keep_100_119_pct": 52.7,
+    "ob_rate_pct": 1.1,
+    "fw_keep_pct": 56.7
    }
   },
   {
@@ -3857,6 +4128,15 @@
      "レギュラーのヤード：公式 WHITE OUT 3,120／IN 3,211（じゃらん Reg. も同値）／ShotNavi Reg. OUT 3,025／IN 3,185／plus-web レギュラー OUT 3,070／IN 3,185／GORAヤーデージ表 REGULAR OUT 2,972／IN 3,130（GORAのティ名は BACK/REGULAR/SENIOR/LADIES/PINK でコースレート表のティ名と一致しない）"
     ],
     "note": "公式のコースレートは「BLUE Tee 72.3／WHITE Tee 69.6／RED Tee 67.9」のみでスロープ・男女別の記載なし。BLUE＝バック、WHITE＝レギュラーの対応は公式の表記ではなく、GORA の BACK 列＝BLUE の値、GORAコースレート表のレギュラー6,331Y＝WHITE合計から判断。ShotNaviの1〜9番HDCPは未掲載（他出典で確認）。HDCP1は6番（OUT）。設計：工藤定雄・井田毅（plus-web）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00667/",
+    "fairway_wide": 4.3,
+    "reviews": 81,
+    "ob_rate_100_119_pct": 1.1,
+    "fw_keep_100_119_pct": 44.1,
+    "ob_rate_pct": 0.6,
+    "fw_keep_pct": 62.1
    }
   },
   {
@@ -3964,6 +4244,15 @@
      "GDO の CR（バック72.0／レギュラー70.0／フロント68.4）は検索要約のみ。要約では GDOスコアアプリのデータ（2025年7月〜2026年6月）から算出とされ、公式CRでない可能性"
     ],
     "note": "公式の表記は「コースレート：72」「総ヤード数：7000Yds」でティの記載なし（7,000Yはフルバック合計と一致するがCRのティとは明記されていない）。公式のティは フルバック（OUT 3,520／IN 3,480＝7,000）／バック（3,261／3,249＝6,510）／レギュラー（3,075／3,045）／シニア（2,897／2,779）／レディース（2,610／2,580）。yards_back には「バック」の値を入れたので、最長はフルバックである点に注意。旧名は富岡バーディクラブ（ShotNavi・plus-web）。設計：ラリー・ネルソン、富澤廣親。開場1989年（plus-web）。HDCP1は6番（OUT）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00666/",
+    "fairway_wide": 4.3,
+    "reviews": 199,
+    "ob_rate_100_119_pct": 0.5,
+    "fw_keep_100_119_pct": 41.0,
+    "ob_rate_pct": 0.4,
+    "fw_keep_pct": 46.3
    }
   },
   {
@@ -4045,6 +4334,15 @@
      "plus-web のホール別は BACK OUT 3,363／IN 3,237（15番BACKが「18」と誤記）、レギュラー OUT 3,101／IN 3,214 で、公式（Blue 3,274／3,324、White 2,982／3,124）と不一致（旧データの可能性）"
     ],
     "note": "公式（PGM予約サイトのコースガイド）・GORA・じゃらん・ShotNavi はヤードが一致。公式・GORAにコースレートの記載なし、じゃらんは「－」。CR 72.1 はティ不明（総ヤード6,598＝Blue合計と並記）。ティは Blue/White/Gold/Red の4種で、Back＝Blue・Reg.＝White・Ladies＝Red の対応は ShotNavi の列見出しによる（Gold の呼び名は記載なし）。旧名は富岡カントリークラブ（plus-web・ShotNavi）、改称年（memo 2019年）は未確認。設計：マーク・F・ラザート。HDCP1は4番（OUT）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00665/",
+    "fairway_wide": 4.1,
+    "reviews": 393,
+    "ob_rate_100_119_pct": 1.3,
+    "fw_keep_100_119_pct": 47.4,
+    "ob_rate_pct": 1.3,
+    "fw_keep_pct": 50.9
    }
   },
   {
@@ -4156,6 +4454,15 @@
      "Red ティのヤード（参考）：公式 オレンジ2,508／ブルー2,518／ゴールド2,536、GORA 2,684／2,599／2,604、じゃらん ゴールド2,594 と出典で差（Blue・White は全出典一致）"
     ],
     "note": "27H（オレンジ・ブルー・ゴールド、各PAR36）。HDCPは公式・GORAとも各9Hの中で1〜9の順位付け（オレンジ:4番、ブルー:5番、ゴールド:5番がHDCP1）なので奇数/偶数の区別はなく null。plus-web のCR表記は原文「71.4(ｵﾚﾝｼﾞ･ﾌﾞﾙｰ) 70.8(ﾌﾞﾙｰ･ｺﾞｰﾙﾄﾞ) 71.3(ｺﾞｰﾙﾄﾞ･ｵﾚﾝｼﾞ)」でティ記載なし。公式・GORA・じゃらんにCRなし。Back＝Blue・Reg.＝White の対応は plus-web の BACK／レギュラー列の値が Blue／White と一致することから。旧名はレイクウッドゴルフクラブ富岡コース（plus-web・ShotNavi、featureと一致）、改称年は未確認。設計：テッド（テオドール・G）・ロビンソン、開場1996年。featureの「サウスより手強い」は、ティ不明ながら CR ではノース最大71.4＜サウス72.1。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00669/",
+    "fairway_wide": 4.1,
+    "reviews": 280,
+    "ob_rate_100_119_pct": 1.5,
+    "fw_keep_100_119_pct": 52.7,
+    "ob_rate_pct": 1.4,
+    "fw_keep_pct": 56.2
    }
   },
   {
@@ -4243,6 +4550,15 @@
      "IN の HDCP：公式は15番・16番がともに「2」（誤記とみられる）／GORA・ShotNavi は15番16・16番2"
     ],
     "note": "公式（rfgr.jp/silk）のティは バック／レギュラー／フロント／レディース（総距離 Back 6,736y・Regular 6,112y・Front 5,569y・Ladies 5,097y）で色の記載なし。旧名はオリコゴルフ倶楽部（ShotNavi・GORA、memoと一致）。設計：加藤俊輔（公式、featureと一致）。開場1998/10/12。HDCP1は5番（OUT）。改修・閉鎖の告知は見当たらず（2021年にフットゴルフ受付終了の告知のみ）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00668/",
+    "fairway_wide": 2.8,
+    "reviews": 533,
+    "ob_rate_100_119_pct": 1.7,
+    "fw_keep_100_119_pct": 52.7,
+    "ob_rate_pct": 2.1,
+    "fw_keep_pct": 55.4
    }
   },
   {
@@ -4307,6 +4623,15 @@
      "総距離：公式 BACK 6,487／GORA・ShotNavi・plus-web の総距離表記6,411Y／じゃらん「6,450ヤード」・ブルー OUT 3,210／IN 2,962（他と不一致）"
     ],
     "note": "コースレートはどの出典にも数値なし（ShotNavi「--」、じゃらん「－」、plus-web・GORA・公式は記載なし）。公式のティは BACK／REGULAR／GREEN／LADIES（TOTAL 6,487／6,095／5,454／4,746）。公式トップに「OUTコース2番・4番・6番ホールのバックティ（青マーク）のティーイングエリアの改修工事を行っております」と告知あり（2026-10-18時点）＝バックのOUTヤードが変わる可能性。hdcp は公式の割り振りが奇偶で分かれていないため null（HDCP1は公式でIN、GORA/ShotNaviでOUT）。旧名は富岡野上カントリー倶楽部（ShotNavi・plus-web）。設計：フジタ。開場1999/11/01。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00670/",
+    "fairway_wide": 4.0,
+    "reviews": 8,
+    "ob_rate_100_119_pct": 1.1,
+    "fw_keep_100_119_pct": 53.7,
+    "ob_rate_pct": 0.7,
+    "fw_keep_pct": 60.0
    }
   },
   {
@@ -4410,6 +4735,15 @@
      "ShotNavi の Ladies IN 合計 2,743 ／ 公式 LADIES IN 2,617 で不一致"
     ],
     "note": "公式サイトは http://shimonitacc.com（courses.json の url は null）。公式のティ名は BACK/REG/FRONT/LADIES で色の記載なし。色は楽天GORA概要（https://booking.gora.golf.rakuten.co.jp/guide/disp/c_id/100030）の表記：B.T（黒）7,018y・R.T（青）6,367y・F.T（白）5,905y・赤ティ 5,394y。B.T・R.T・F.T の総ヤードは公式 BACK・REG・FRONT 合計と一致。公式・GORA・ShotNavi の HDCP はOUTが奇数（HDCP1=6番）。feature のバック7,018y は一致。memo の『東武系』は未検証。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00699/",
+    "fairway_wide": 4.4,
+    "reviews": 186,
+    "ob_rate_100_119_pct": 0.5,
+    "fw_keep_100_119_pct": 70.1,
+    "ob_rate_pct": 0.5,
+    "fw_keep_pct": 65.5
    }
   },
   {
@@ -4511,6 +4845,15 @@
      "plus-web の総ヤード 6,687y はホール別 BACK 合計 6,630y と不一致（CR 71.4 は同値）"
     ],
     "note": "公式・GORA・ShotNavi とも HDCP はOUTが奇数（HDCP1=5番）。CRの値は3出典とも71.4で一致（ティ指定があるのはGORAのみ）。GORA概要の表記は『LPGA認定コース』『ベルーナレディスカップ開催コース』。feature の『全国22コースのみ』は未検証。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00701/",
+    "fairway_wide": 3.5,
+    "reviews": 217,
+    "ob_rate_100_119_pct": 2.0,
+    "fw_keep_100_119_pct": 46.2,
+    "ob_rate_pct": 1.6,
+    "fw_keep_pct": 47.5
    }
   },
   {
@@ -4633,6 +4976,15 @@
      "plus-web のホール別合計（BACK OUT 3,517／IN 3,414、レギュラー 3,309／3,195）は公式第1グリーンと一部不一致"
     ],
     "note": "2グリーン制。nines の数値は公式レイアウトの第1グリーン（Blue/White）。第2グリーンは OUT Blue 3,376・White 3,174／IN Blue 3,172・White 3,018（公式）。GORAの第2グリーンCR：バック70.9（6,585y）・レギュラー69.3（6,205y）・フロント1 67.0（5,714y）・フロント2 62.7（4,787y）。公式のティ名は Blue/White/Green/Red の色のみで、バック／レギュラー等との対応は書かれていない。GORAのCR表のバック6,928y・レギュラー6,512yが第1グリーンのBlue 6,874y・White 6,505yに近いことから Blue＝バック、White＝レギュラーとして yards_back／yards_reg を記入（対応は推定）。HDCPはOUTが奇数（HDCP1=6番、公式・GORA・ShotNavi一致）。公式お知らせ（2026-10-10）で10月11日以降の使用グリーン変更を告知（芝の生育状況により変更あり）。courses.json の course_rating_back は null だが GORA に第1グリーン・バック72.7あり。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00700/",
+    "fairway_wide": 3.6,
+    "reviews": 388,
+    "ob_rate_100_119_pct": 1.1,
+    "fw_keep_100_119_pct": 48.8,
+    "ob_rate_pct": 1.0,
+    "fw_keep_pct": 45.9
    }
   },
   {
@@ -4759,6 +5111,15 @@
      "総距離：公式詳細・GORAとも 9,841y だが、公式レイアウトの3コースBlue合計は 9,665y"
     ],
     "note": "旧名 チャーミングリゾート関越ハイランド（plus-web で確認）。27H＝カエデ・ケヤキ・サザンカ（各PAR36）。組み合わせは かえで×さざんか／けやき×かえで／さざんか×けやき（GORA）。HDCPは公式・GORAとも各9Hで1〜9の通し番号で奇数・偶数の区別がないため null（HDCP1：カエデ5番・ケヤキ6番・サザンカ5番）。公式のティ名は Blue/White/Green/Red の色のみ。GORAのCR表のヤードが Blue/White/Green/Red の各組み合わせ合計に近いことから Blue＝バック、White＝レギュラーとして記入（対応は推定）。CRは公式・plus-web とも組み合わせ別でティ不明。クラブハウスは2024年12月にリニューアル（検索要約のみ）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00695/",
+    "fairway_wide": 3.7,
+    "reviews": 491,
+    "ob_rate_100_119_pct": 1.8,
+    "fw_keep_100_119_pct": 58.7,
+    "ob_rate_pct": 1.2,
+    "fw_keep_pct": 59.8
    }
   },
   {
@@ -4920,6 +5281,15 @@
      "じゃらんの総ヤード表記 12,745y は 4つの9Hのレギュラー合計 12,770y と不一致"
     ],
     "note": "旧 サンコー72カントリークラブ。2019-12-16 に72H→36Hへ縮小（plus-web ニュース2019/10/15：東は赤城・榛名を残し妙義を閉鎖、西は高崎・岩平を残し吉井・観音・ショートコースを閉鎖）。現行公式は『東コース』『西コース』の各 OUT No.1〜9／IN No.10〜18 として掲載し、9Hの固有名はない。HDCPは東・西ともOUTが奇数（東OUT HDCP1=3番、西OUT HDCP1=3番。公式・GORA一致）。じゃらんではグリーンはベント・高麗。西コースのティ別CRは見つからず。feature の『2026年日本プロ予選会場』は未検証。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00696/",
+    "fairway_wide": 4.2,
+    "reviews": 62,
+    "ob_rate_100_119_pct": 0.7,
+    "fw_keep_100_119_pct": 55.0,
+    "ob_rate_pct": 0.4,
+    "fw_keep_pct": 53.6
    }
   },
   {
@@ -4985,6 +5355,15 @@
      "ShotNavi は3つ目のティを Ladies と表記（公式は FRONT、ヤードは同じ）"
     ],
     "note": "CRは公式・GORA・ShotNavi（『--』）・じゃらん（『－』）のいずれにも記載なし。plus-web には該当ページが見つからず。公式コースページにHDCPの記載はなく、hdcp はGORA・ShotNaviによる。公式のコースマップPDF（/.assets/coursemap2.pdf）は404。総ヤード BACK 7,101y・REGULAR 6,307y。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00693/",
+    "fairway_wide": 4.5,
+    "reviews": 4,
+    "ob_rate_100_119_pct": 0.3,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 0.2,
+    "fw_keep_pct": 52.7
    }
   },
   {
@@ -5193,6 +5572,15 @@
      "GORA CR表のフロント2 5,739y・レディース5,024y は Green 合計5,717y・Red 合計4,982y と一致しない"
     ],
     "note": "yards_back は GORA のCR表で『バック』とされる Blue（公式レイアウト）。最長の Black（GORA の『フルバック』）は追加フィールド yards_fullback に記入（OUT 3,574／IN 3,555、GORA）。yards_reg は null：『レギュラー』と名の付くティは公式・GORAになく、White（公式 OUT 3,113／IN 3,159）はGORAのCR表で『フロント1』。plus-web の『レギュラー』列は 3,230／3,182（旧Whiteとみられる）。HDCP は OUT が奇数（HDCP1=6番、公式・GORA・ShotNavi一致）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00658/",
+    "fairway_wide": 3.7,
+    "reviews": 408,
+    "ob_rate_100_119_pct": 1.3,
+    "fw_keep_100_119_pct": 47.4,
+    "ob_rate_pct": 1.2,
+    "fw_keep_pct": 46.1
    }
   },
   {
@@ -5327,6 +5715,15 @@
      "GORAのレギュラーCR 70.1 の対象ヤード 6,292Y は現行White合計 6,310Y と一致しない"
     ],
     "note": "アコーディア運営（読みはミドノ）。18H・ベント1グリーン。公式（reserve.accordiagolf.com）はBlue/White/Green/Redの4ティ表記。バック=Blue・レギュラー=WhiteはShotNavi・じゃらんのBack/Reg値が公式Blue/White値と一致することによる。公式のGreen/Redのヤード（OUT 2,612/1,979）はGORAのRed（2,727）・ShotNaviのLadiesと異なる。スロープの記載はどの出典にもなし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00663/",
+    "fairway_wide": 3.6,
+    "reviews": 258,
+    "ob_rate_100_119_pct": 1.4,
+    "fw_keep_100_119_pct": 48.3,
+    "ob_rate_pct": 1.2,
+    "fw_keep_pct": 45.7
    }
   },
   {
@@ -5453,6 +5850,15 @@
      "ホール別HDCPの並び：公式・ShotNavi（東1番=5・2番=2 等）とGORA（東1番=2・2番=5 等）で異なる（いずれも各9Hで1〜9）"
     ],
     "note": "27H（東・西・南）、ベント1グリーン。組み合わせは東×西・西×南・南×東（GORA）。ホール別HDCPは各9H内で1〜9の振り方（公式・GORA・ShotNavi）のため odd/even は判定できず null。公式サイトにコースレートの記載なし。スロープの記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00657/",
+    "fairway_wide": 3.9,
+    "reviews": 148,
+    "ob_rate_100_119_pct": 1.1,
+    "fw_keep_100_119_pct": 55.2,
+    "ob_rate_pct": 1.0,
+    "fw_keep_pct": 59.4
    }
   },
   {
@@ -5595,6 +6001,15 @@
      "plus-webのスコアカード（BACK 3,353/3,244・REG 3,152/3,088、ホール別パー配列も異なる）は現行（GORA・じゃらん・ShotNavi）と一致しない＝旧レイアウトの可能性"
     ],
     "note": "旧名 御荷鉾カントリー倶楽部（ShotNavi・plus-web）。2016年1月1日にコースレイアウト変更（GORA）。ヤードはGORA・じゃらん・ShotNaviで一致（チャンピオン6,774／バック6,447／レギュラー6,074）。公式サイト http://www.meilakehills-cc.jp/ はWebFetchがSSLエラーで開けず未確認。スロープの記載なし。yards_champion は追加項目。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00662/",
+    "fairway_wide": 3.5,
+    "reviews": 183,
+    "ob_rate_100_119_pct": 2.4,
+    "fw_keep_100_119_pct": 52.7,
+    "ob_rate_pct": 2.3,
+    "fw_keep_pct": 55.8
    }
   },
   {
@@ -5714,6 +6129,15 @@
      "総ヤード：GORA・ShotNavi・じゃらん 6,115／plus-web 5,692"
     ],
     "note": "藤岡市浄法寺の18H（公式は「浄法寺コース」）。ShotNavi本文では「ジョウブカントリークラブ（旧名:上武カントリークラブ 浄法寺コース）」。OUT＝旧さつき、IN＝旧ゆうかり（じゃらん）。2グリーン（ベント・高麗）。nines のヤードは公式値（じゃらんの表では高麗グリーン側の値と一致）。ベント側はOUT バック3,205/レギュラー3,002、IN バック2,880/レギュラー2,643（GORA・じゃらん）。同社の9H「鬼石コース」は2013年8月閉場（ShotNavi）。閉鎖した上武ゴルフ場（太田）とは別。ホール別HDCPは各9Hで1〜9のため odd/even は null。GORAのCR表には「コースの組み合わせ：OUT x IN」の記載あり。スロープの記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00692/",
+    "fairway_wide": 2.9,
+    "reviews": 111,
+    "ob_rate_100_119_pct": 1.4,
+    "fw_keep_100_119_pct": 53.3,
+    "ob_rate_pct": 1.8,
+    "fw_keep_pct": 65.1
    }
   },
   {
@@ -5875,6 +6299,15 @@
      "西コースのCRはバックかどうか不明（公式はティ記載なし・GORAには西の値なし）"
     ],
     "note": "アコーディア運営。36H（東18H・西18H）。旧名 チャーミングリゾート藤岡（plus-web・ShotNavi）。東は2グリーン（ベント・高麗）、西はベント1グリーン（公式の西のヤーデージ表はグリーン区分なし）。nines の yards_back/yards_reg は東がベント側の公式値、korai に高麗側の公式値（追加項目）。バック=Blue・レギュラー=WhiteはShotNaviのBack/Regular値が公式Blue/White（高麗）値と一致することによる。公式トップに「～2024年11月1日リニューアルオープン～」の表記と「2026年10月東コース使用グリーンのお知らせ」（2026-09-24）あり＝東は月ごとに使用グリーンが替わる。GORAのGreen・Redティ（フロント・レディース相当か不明）のCRは記録していない（高麗 Green67.9/Red64.2、ベント Green67.1/Red63.3）。スロープの記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00661/",
+    "fairway_wide": 3.3,
+    "reviews": 581,
+    "ob_rate_100_119_pct": 1.8,
+    "fw_keep_100_119_pct": 47.6,
+    "ob_rate_pct": 1.4,
+    "fw_keep_pct": 54.1
    }
   },
   {
@@ -5962,6 +6395,15 @@
      "総ヤード：GORA・じゃらん 6,750Y ／ バック合計・plus-web・ShotNavi 6,657"
     ],
     "note": "GORA・じゃらんの名称は「エースゴルフ場」（藤岡市上日野大平325）。旧名 サンフィールドゴルフクラブ（plus-web・ShotNavi）。2021年に一度閉鎖、現在は完全セルフ・スループレーで営業、トイレ以外の施設は利用不可（GORA）。楽天GORAの c_id/220063 は静岡県の富士エースゴルフ倶楽部で別物（混同注意）。公式 acegc.com はWebFetchがSSLエラーで開けず未確認。CRはティ別の値が見つからず（3出典とも70.0・ティ記載なし）。ベント1グリーン。スロープの記載なし。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00659/",
+    "fairway_wide": 3.9,
+    "reviews": 65,
+    "ob_rate_100_119_pct": 0.3,
+    "fw_keep_100_119_pct": null,
+    "ob_rate_pct": 0.9,
+    "fw_keep_pct": 61.3
    }
   },
   {
@@ -6172,6 +6614,15 @@
      "courses.json の course_rating_back 72.9・ShotNavi 72.9（ティ不明・7,051Yds）／GORA 第一グリーン チャンピオン73.2（7,051Y）・バック72.6（6,913Y）＝72.9 はGORAのどのティの値とも一致しない"
     ],
     "note": "玉村町川井の河川敷18H、2グリーン（高麗）。feature のチャンピオン7,051y は GORA のCHAMPION合計（3,529+3,522）と一致。ヤード（バック・レギュラー）とHDCPは GORA・ShotNavi・じゃらんで一致（じゃらんは「第１Ｇ」の表）。GORAのフロント1〜4・第二グリーンのフロント系CRもあり（第一グリーン フロント1 69.3/6,177Y ほか）。公式 http://www.shintamagolf.jp/ はWebFetchがSSLエラーで開けず未確認。スロープの記載なし。yards_champion は追加項目。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00728/",
+    "fairway_wide": 4.0,
+    "reviews": 451,
+    "ob_rate_100_119_pct": 0.6,
+    "fw_keep_100_119_pct": 40.0,
+    "ob_rate_pct": 0.4,
+    "fw_keep_pct": 45.2
    }
   },
   {
@@ -6441,6 +6892,15 @@
      "グリーン数：公式・GORA は2グリーン（メイン/サブ）／じゃらん『1グリーン』"
     ],
     "note": "18H（OUT/IN）・2グリーン（メイン/サブ）。公式のJGA/USGAレーティング表（https://akagi-cc.com/pages/72/）にOUT・IN別の9Hレートとスロープがあるため nines[].ratings に男子のFullBack/Back/Regularを収録（同表にFront1・Front2・Ladies、女子レートもあり。女子は未収録）。GORAのレート値は公式と同じ（スロープなし）。GORAのレート表ヤード：メイン フルバック6,799／バック6,735／レギュラー6,346、サブ フルバック6,502／バック6,440。公式ヤーデージ表のティ名は BACK/REG/FRO、ティ色はどの出典にも記載なし。tee『フロント』は Front1 と Front2 の2つがあり tee_raw で区別。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00680/",
+    "fairway_wide": 4.0,
+    "reviews": 156,
+    "ob_rate_100_119_pct": 1.7,
+    "fw_keep_100_119_pct": 51.0,
+    "ob_rate_pct": 1.4,
+    "fw_keep_pct": 51.3
    }
   },
   {
@@ -6528,6 +6988,15 @@
      "plus-web・じゃらんのレギュラー：OUT 3,292／IN 3,157（plus-web）・3,140（じゃらん）／公式MG 3,151／3,005"
     ],
     "note": "18H（OUT/IN）。公式はMG（メイングリーン）/SG（サブグリーン）の2列でヤードを掲載、ティは Back/Regular/Front/Ladies（略記 BT/RT/FT/LT）、色の記載なし。CRは公式クラブ概要に『70.8（OUT・IN・ベント）』の1つだけでティ・MG/SGの別なし、スロープなし（公式コースガイドの見出しは『ヤーデージ / コースレート』だが表にレートの数値なし）。GORA・じゃらんはレート掲載なし。公式に『クラブ競技開催日はバックティー使用不可』。東武興業（東武グループ）運営。赤城CC（id 57）とは別コース。courses.json の url は null だが公式サイトは https://www.kiryucc.com/（http は https へ301転送）。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00681/",
+    "fairway_wide": 4.4,
+    "reviews": 81,
+    "ob_rate_100_119_pct": 1.0,
+    "fw_keep_100_119_pct": 58.5,
+    "ob_rate_pct": 0.6,
+    "fw_keep_pct": 58.8
    }
   },
   {
@@ -6946,6 +7415,15 @@
      "HDCP：公式・ShotNavi は各9Hで1〜9／GORA は全ホール0"
     ],
     "note": "27H（愛宕・御所ノ入・天王）。HDCPは公式・ShotNaviとも各9H内で1〜9の通し番号で、18H用の奇数/偶数の割当ては記載なし＝hdcp は null（HDCP1は3コースとも存在：愛宕4番・御所ノ入8番・天王3番）。2グリーン（GORA：第1/第2グリーン、じゃらん：ベント/高麗。公式ページにはグリーン別の記載なし。第1/第2とベント/高麗の対応はどの出典にも明記なし）。GORAのレートは組み合わせ切替式：初期表示の愛宕×御所ノ入はWebFetchで本文確認、御所ノ入×天王と天王×愛宕は同ページHTMLに埋め込まれた切替データ（__NUXT_DATA__）で確認。公式ページはShift_JIS、ティ表記は BT/RT のみ（正式名・色の記載なし）。公式に『御所ノ入は大幅な改造工事』とあり（時期不明）。現状の閉鎖・改修の告知は見当たらず。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00653/",
+    "fairway_wide": 3.5,
+    "reviews": 100,
+    "ob_rate_100_119_pct": 1.3,
+    "fw_keep_100_119_pct": 57.9,
+    "ob_rate_pct": 1.7,
+    "fw_keep_pct": 62.3
    }
   },
   {
@@ -7223,6 +7701,15 @@
      "plus-web のホール別ヤードは西INのレギュラーが東INと同一、西14番 BACK<REG など崩れているため不採用。総距離表示は GORA・plus-web・ShotNavi 13,335／じゃらん 13,326"
     ],
     "note": "36H（西OUT/西IN/東OUT/東IN）・2グリーン（ベント/高麗、季節で切替。2026-09-19からベント営業）。yards_back/yards_reg はベントグリーン（公式・GORA一致）、高麗は yards_by_green。⚠現状：2026年7月16〜18日の豪雨災害で東OUTがクローズ、当面は西OUT⇔西INの18H営業（公式 news.html 2026-07-21、GORAのお知らせ『2026年9月現在』、GORA口コミ2026-10-15『1コースがまだ使えない』）。GORAのお知らせは『復旧出来次第 27Hの3コースローテーションに戻す予定』＝災害前から27H運用で東INは使われていなかった可能性が高い（GDO『当面27H営業』・口コミ『東INがコースから無くなってから』は検索要約のみで未確認）。GORAのレート組み合わせも 西OUT×西IN／西IN×東OUT／東OUT×西OUT の3つで東INを含まない（rounds の『西IN・東OUT』『東OUT・西OUT』はこのGORA表記どおり）。2026-08-26〜09-03 西OUT 9番は復旧工事のためPAR4営業（公式PDF https://www.hohoh.co.jp/img/news/202608_09_restoration.pdf）。2026-09-18 全ホールに特設ティー設置。GORAのレートは組み合わせ切替式：初期表示の西OUT×西INはWebFetchで本文確認、他2組み合わせは同ページHTMLの埋め込みデータ（__NUXT_DATA__）で確認。公式ティ表記 B.T/R.T/L.T、色の記載なし。設計 三浦一美。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00652/",
+    "fairway_wide": 3.5,
+    "reviews": 105,
+    "ob_rate_100_119_pct": 1.1,
+    "fw_keep_100_119_pct": 55.5,
+    "ob_rate_pct": 1.2,
+    "fw_keep_pct": 57.8
    }
   },
   {
@@ -7295,6 +7782,15 @@
      "GDO（403のため検索要約のみ）：総距離 6,571・CR『－』（公式グリーン1 BT 6,554）"
     ],
     "note": "18H（OUT/IN）・2グリーン（グリーン1/グリーン2、高麗〈ヒメ高麗〉）。yards_back/yards_reg はグリーン1。CRは公式コース概要の『70.6』1つだけでティ・グリーンの記載なし、スロープなし（ShotNavi『--』、じゃらん『－』、GORA 記載なし）。公式ティ名 BT：バックティー／RT：レギュラーティー／FT：フロントティー（色の記載なし）。GORA にレディースティ（レッド）・レディースティ②（ピンク）の列あり。東急リゾーツ＆ステイ運営（memo『東急系』と一致）、セルフ、設計 野口基一。所在地 邑楽郡板倉町板倉777。改修・閉鎖の告知は見当たらず。"
+   },
+   "jalan": {
+    "url": "https://golf-jalan.net/gc00731/",
+    "fairway_wide": 4.2,
+    "reviews": 331,
+    "ob_rate_100_119_pct": 0.8,
+    "fw_keep_100_119_pct": 32.9,
+    "ob_rate_pct": 0.4,
+    "fw_keep_pct": 40.4
    }
   }
  ]

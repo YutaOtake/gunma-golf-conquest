@@ -1,7 +1,7 @@
 // 群馬ゴルフ 全制覇トラッカー（ビルド不要の vanilla JS）
 // データ源：courses.json（読むだけ・書き換えない）／記録：IndexedDB（この端末の中だけ）
 import * as db from './db.js';
-import { analyze, YARDS_PER_STROKE } from './rating.js';
+import { analyze, YARDS_PER_STROKE, forgivingOf, compareForgiving, FORGIVING } from './rating.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -21,6 +21,7 @@ const SORTS = {
   easy: 'やさしい順',
   reg: 'スコアが出やすい順（レギュラー）',
   gdo: 'GDO上級者平均順',
+  safe: '曲がっても安心順',
   elev: '標高順（高い順）',
   name: '名前順（読み）',
 };
@@ -31,6 +32,7 @@ const state = {
   courses: [],
   byId: new Map(),
   analysis: new Map(),
+  forgiving: new Map(),
   yomi: {},
   hay: new Map(),
   rounds: [],
@@ -141,20 +143,26 @@ const honraiCR = (c) => honraiOf(c)?.cr ?? null;
 // レギュラーティのレート（本来のレートと同じ組み合わせ。無ければレギュラーの最大）
 const regularCR = (c) => state.analysis.get(c.id)?.regular?.cr ?? null;
 
-// 順位を出す並び替え（値が小さいほど上位）。値の無いコースは末尾にまとめる
+// 曲がっても安心度（じゃらんの統計と口コミ。判定は rating.js の forgivingOf）
+const forgivingOfC = (c) => state.forgiving.get(c.id) ?? null;
+const pctText = (v) => (v == null ? '—' : `${v.toFixed(1)}%`);
+
+// 順位を出す並び替え（cmp が無ければ値が小さいほど上位）。値の無いコースは末尾にまとめる
 const RANK_KEYS = {
-  reg: { value: regularCR, label: 'レギュラー', none: 'レギュラーティのレートが見つからないコース' },
-  gdo: { value: (c) => c.gdo_upper_avg ?? null, label: '上級者平均', none: 'GDO上級者平均の無いコース' },
+  reg: { value: regularCR, text: (v) => `レギュラー ${v.toFixed(1)}`, none: 'レギュラーティのレートが見つからないコース' },
+  gdo: { value: (c) => c.gdo_upper_avg ?? null, text: (v) => `上級者平均 ${v.toFixed(1)}`, none: 'GDO上級者平均の無いコース' },
+  safe: { value: forgivingOfC, cmp: compareForgiving, text: (f) => `安心度 ${f.hits}/3 ・ OB ${pctText(f.ob)}`, none: 'じゃらんの統計が無いコース' },
 };
 // 県内順位（絞り込みに関係なく全コースで数える。同じ値は同じ順位）
 function rankMap(key) {
   const k = RANK_KEYS[key];
-  const vals = state.courses.map((c) => [c.id, k.value(c)]).filter(([, v]) => v != null).sort((a, b) => a[1] - b[1]);
+  const cmp = k.cmp || ((a, b) => a - b);
+  const vals = state.courses.map((c) => [c.id, k.value(c)]).filter(([, v]) => v != null).sort((a, b) => cmp(a[1], b[1]));
   const m = new Map();
   let prev = null;
   let rank = 0;
   vals.forEach(([id, v], i) => {
-    if (v !== prev) { rank = i + 1; prev = v; }
+    if (prev === null || cmp(prev, v) !== 0) { rank = i + 1; prev = v; }
     m.set(id, rank);
   });
   return m;
@@ -261,6 +269,12 @@ const SORT_FN = {
   reg: (a, b) => nullLast(regularCR(a), regularCR(b), 1)
     || nullLast(honraiCR(a), honraiCR(b), 1) || a.id - b.id,
   gdo: (a, b) => nullLast(a.gdo_upper_avg, b.gdo_upper_avg, 1) || a.id - b.id,
+  safe: (a, b) => {
+    const fa = forgivingOfC(a);
+    const fb = forgivingOfC(b);
+    if (!fa || !fb) return (fa ? -1 : fb ? 1 : 0) || a.id - b.id;
+    return compareForgiving(fa, fb) || a.id - b.id;
+  },
   elev: (a, b) => nullLast(a.elevation_m, b.elevation_m, -1) || a.id - b.id,
   name: (a, b) => collator.compare(yomiOf(a), yomiOf(b)) || a.id - b.id,
 };
@@ -468,7 +482,7 @@ function renderList() {
     const ranks = rankMap(state.sort);
     const withValue = list.filter((c) => k.value(c) != null);
     const without = list.filter((c) => k.value(c) == null);
-    const line = (c) => `<span class="cc-key">県内${ranks.get(c.id)}位 ・ ${esc(k.label)} ${k.value(c).toFixed(1)}</span>`;
+    const line = (c) => `<span class="cc-key">県内${ranks.get(c.id)}位 ・ ${esc(k.text(k.value(c)))}</span>`;
     html = withValue.length ? `<ul>${withValue.map((c) => cardHTML(c, line(c))).join('')}</ul>` : '';
     if (without.length) {
       html += `<section class="area-group" aria-label="${esc(k.none)}">
@@ -539,6 +553,7 @@ function renderDetail() {
         <div><dt>本来のレート</dt><dd>${honraiText}</dd></div>
         <div><dt>GDO上級者平均</dt><dd>${gdo}</dd></div>
       </dl>
+      ${safeHTML(c)}
       ${layoutHTML(c, an)}
       <section class="detail-section"><h3>特徴</h3><p>${esc(c.feature)}</p></section>
       ${c.memo ? `<section class="detail-section"><h3>メモ</h3><p>${esc(c.memo)}</p></section>` : ''}
@@ -556,6 +571,39 @@ function renderDetail() {
       <button type="button" class="btn btn-primary" data-action="add-round-here">＋ このコースのラウンドを記録</button>
     </div>`;
   if (keepScroll) $('.detail-scroll', root).scrollTop = keepScroll;
+}
+
+// 曲がっても安心度（じゃらんの「100〜119で回る人」の統計と口コミを、3つの条件で見る）
+function safeHTML(c) {
+  const f = forgivingOfC(c);
+  if (!f) {
+    return `<section class="detail-section safe-sec"><h3>曲がっても安心度</h3>
+      <p class="muted">じゃらんに、100〜119で回る人の統計と口コミがありません。</p></section>`;
+  }
+  const F = FORGIVING;
+  const by = Object.fromEntries(f.conds.map((x) => [x.key, x]));
+  const mark = (x) => (x.ok ? '○' : x.known ? '×' : '—');
+  const fwCell = f.fw != null ? pctText(f.fw) : f.fwSuspect ? `—<br><small>${F.suspectFw}%（仮の値とみて不明）</small>` : '—';
+  const wideCell = f.wide != null
+    ? `${f.wide.toFixed(1)}<small> / 5</small><br><small>口コミ${f.reviews ?? '—'}件${f.fewReviews ? `（${F.reviewsMin}件未満のため判定に使わない）` : ''}</small>`
+    : '—';
+  const lg = state.data?.legend?.jalan;
+  const link = f.url
+    ? `<ul class="src-links"><li><a href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">${esc(f.url.replace(/^https?:\/\//, ''))}</a></li></ul>`
+    : '';
+  return `<section class="detail-section safe-sec"><h3>曲がっても安心度 <span class="safe-hits">${f.hits} / 3</span></h3>
+    <div class="rt-wrap"><table class="rt">
+      <caption>100〜119で回る人の統計と口コミ（じゃらん）</caption>
+      <thead><tr><th scope="col">項目</th><th scope="col">このコース</th><th scope="col">○の基準</th><th scope="col">判定</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">OB率</th><td>${pctText(f.ob)}</td><td>${F.obMax.toFixed(1)}%以下<br><small>全国 ${F.national.ob}%</small></td><td>${mark(by.ob)}</td></tr>
+        <tr><th scope="row">フェアウェイの広さ<br><small>（口コミ）</small></th><td>${wideCell}</td><td>${F.wideMin.toFixed(1)}以上</td><td>${mark(by.wide)}</td></tr>
+        <tr><th scope="row">FWキープ率</th><td>${fwCell}</td><td>${F.fwMin}%以上<br><small>全国平均</small></td><td>${mark(by.fw)}</td></tr>
+      </tbody>
+    </table></div>
+    <p class="fine">OBが少ないほど、曲がっても打ち直しにならずスコアを崩しにくい。—＝データ不足で判定できない。</p>
+    ${lg || link ? `<details class="src"><summary>出典</summary>${lg ? `<p class="fine">${esc(lg)}</p>` : ''}${link}</details>` : ''}
+  </section>`;
 }
 
 // コース別の難易度（18Hの組み合わせ表・9H表・出典・食い違い）
@@ -660,14 +708,25 @@ function renderGuide() {
         <dt>9H（推定）</dt><dd>9H別の公式値が無いとき、18Hのレートを9Hのヤード差で振り分けた値（${YARDS_PER_STROKE}ヤード≒1打）。距離の差だけで、池・OB・高低差の差は入りません。公式の9H値がある2コース（白水GC・赤城CC）で試すと、ずれは0.0〜0.1打でした。</dd>
         <dt>スコアが出やすい順</dt><dd>レギュラーティのコースレートが低い順（本来のレートと同じ組み合わせの値）。多くの人が実際に回るティでの公式の難しさです。</dd>
         <dt>GDO上級者平均順</dt><dd>GDOスコアで、ふだん86〜95で回る人の18H平均が低い順。実際に出たスコアの実績です。</dd>
+        <dt>曲がっても安心順</dt><dd>下の「曲がっても安心度」で満たす条件が多い順。同じ数ならOB率が低い順 → FWキープ率が高い順 → フェアウェイの広さの順。</dd>
         <dt>出典</dt><dd>同じティに出典の違う値があるときは、ゴルフ場の公式 ＞ 楽天GORA ＞ じゃらん ＞ ShotNavi ＞ PLUS の順で採ります。検索結果の要約にしか出てこない値は使いません。公式以外の値には、値の下にサイト名を出しています。食い違いは詳細画面の「出典によって値が違う項目」に。</dd>
       </dl>
+    </section>
+    <section class="card"><h3>曲がっても安心度</h3>
+      <p>曲がる人のスコアを一番削るのはOB（1打罰＋打ち直し）です。じゃらんの「100〜119で回る人」の統計と口コミで、次の3つのうちいくつを満たすかを出します（同じ区分の全国平均と比べます）。</p>
+      <dl class="kv">
+        <dt>OBが少ない</dt><dd>OB率${FORGIVING.obMax.toFixed(1)}%以下（全国平均${FORGIVING.national.ob}%の半分以下）</dd>
+        <dt>フェアウェイが広い</dt><dd>口コミの5段階評価の平均が${FORGIVING.wideMin.toFixed(1)}以上（口コミ${FORGIVING.reviewsMin}件以上のときだけ判定）</dd>
+        <dt>フェアウェイに残りやすい</dt><dd>FWキープ率${FORGIVING.fwMin}%以上（全国平均以上）</dd>
+      </dl>
+      <p class="fine">河川敷などはOBが少ない一方でFWキープ率が低いことがあります（曲がってもラフで止まる型）。統計は直近2年分で、口コミや記録の少ないコースは値がぶれやすいです。</p>
     </section>
     <section class="card"><h3>数字の出どころと注意</h3>
       <dl class="kv">
         <dt>バックCR</dt><dd>${esc(lg.course_rating_back)}</dd>
         <dt>GDO上級者平均</dt><dd>${esc(lg.gdo_upper_avg)}</dd>
         <dt>標高</dt><dd>${esc(lg.elevation_m)}</dd>
+        ${lg.jalan ? `<dt>曲がっても安心度</dt><dd>${esc(lg.jalan)}</dd>` : ''}
       </dl>
     </section>
     <section class="card"><h3>全制覇に数えないコース</h3>
@@ -1368,6 +1427,7 @@ async function init() {
     state.courses = Array.isArray(data.courses) ? data.courses : [];
     state.byId = new Map(state.courses.map((c) => [c.id, c]));
     state.analysis = new Map(state.courses.map((c) => [c.id, analyze(c)]));
+    state.forgiving = new Map(state.courses.map((c) => [c.id, forgivingOf(c)]));
     state.yomi = yomi && typeof yomi === 'object' ? yomi : {};
   } catch (ex) {
     $('#main').innerHTML = `<div class="page"><div class="card"><h2>コースデータを読み込めませんでした</h2><p>${esc(ex.message || ex)}</p><p>通信できる場所で一度開くと、以後はオフラインでも使えます。</p></div></div>`;
